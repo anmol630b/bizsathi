@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import useAuthStore from './store/authStore';
 
-// Pages
 import Landing from './pages/Landing';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
+import VerifyEmail from './pages/auth/VerifyEmail';
 import Dashboard from './pages/dashboard/Dashboard';
 import BusinessSetup from './pages/dashboard/BusinessSetup';
 import Products from './pages/dashboard/Products';
@@ -18,13 +20,11 @@ import Plans from './pages/Plans';
 import Store from './pages/store/Store';
 import NotFound from './pages/NotFound';
 
-// Protected Route
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuthStore();
   return token ? children : <Navigate to="/login" replace />;
 };
 
-// Public Route (redirect if logged in)
 const PublicRoute = ({ children }) => {
   const { token } = useAuthStore();
   return !token ? children : <Navigate to="/dashboard" replace />;
@@ -44,25 +44,21 @@ function App() {
             fontSize: '14px',
             padding: '12px 16px',
           },
-          success: {
-            iconTheme: { primary: '#1D9E75', secondary: '#fff' }
-          },
-          error: {
-            iconTheme: { primary: '#E24B4A', secondary: '#fff' }
-          }
+          success: { iconTheme: { primary: '#1D9E75', secondary: '#fff' } },
+          error: { iconTheme: { primary: '#E24B4A', secondary: '#fff' } }
         }}
       />
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/plans" element={<Plans />} />
         <Route path="/store/:slug" element={<Store />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
-        {/* Auth Routes */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
-        {/* Dashboard Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/dashboard/setup" element={<ProtectedRoute><BusinessSetup /></ProtectedRoute>} />
         <Route path="/dashboard/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
@@ -71,7 +67,6 @@ function App() {
         <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
         <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-        {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
