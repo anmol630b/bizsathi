@@ -4,7 +4,7 @@ import {
   FiHome, FiHeart, FiShoppingBag, FiMapPin, FiSettings,
   FiLogOut, FiMenu, FiX, FiUser, FiEdit2, FiCamera,
   FiPlus, FiTrash2, FiStar, FiPhone, FiSearch,
-  FiChevronRight, FiPackage, FiGlobe, FiBell
+  FiChevronRight, FiPackage, FiGlobe
 } from 'react-icons/fi';
 import useAuthStore from '../../store/authStore';
 import api from '../../utils/api';
@@ -21,9 +21,9 @@ const CustomerDashboard = () => {
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [newAddress, setNewAddress] = useState({ label: 'Home', street: '', city: '', state: '', pincode: '', isDefault: false });
   const [avatarUploading, setAvatarUploading] = useState(false);
-  const [searchStore, setSearchStore] = useState('');
+  
   const avatarRef = useRef();
-  const { user, logout, updateUser } = useAuthStore();
+  const { logout, updateUser } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {

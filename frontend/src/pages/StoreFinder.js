@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiSearch, FiMapPin, FiNavigation, FiShoppingBag, FiStar, FiPhone, FiX, FiFilter } from 'react-icons/fi';
 import api from '../utils/api';
 import toast from 'react-hot-toast';
@@ -101,7 +101,7 @@ const StoreFinder = () => {
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', marginBottom: '32px' }}>
             <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #00C896, #6366F1)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '15px' }}>B</div>
             <span style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: '800', fontSize: '18px', color: 'white' }}>BizSathi</span>
-          </Link>
+          </div>
 
           <h1 style={{ fontSize: '40px', fontWeight: '800', color: 'white', fontFamily: 'Plus Jakarta Sans, sans-serif', marginBottom: '12px', letterSpacing: '-0.03em' }}>
             Find Stores Near You
@@ -207,7 +207,7 @@ const StoreFinder = () => {
         {!loading && stores.length > 0 && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
             {stores.map(store => (
-              <Link key={store._id} to={`/store/${store.slug}`} style={{ textDecoration: 'none' }}>
+              <div key={store._id} style={{textDecoration:'none'}} >`/store/${store.slug}`
                 <div style={{ background: 'white', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', border: '1px solid #F8FAFC', transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)', cursor: 'pointer' }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.1)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)'; }}>
@@ -266,7 +266,7 @@ const StoreFinder = () => {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}
