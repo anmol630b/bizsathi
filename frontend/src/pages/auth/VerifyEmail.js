@@ -29,7 +29,7 @@ const VerifyEmail = () => {
             <>
               <div style={{ fontSize: '56px', marginBottom: '16px' }}>✅</div>
               <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '22px', fontWeight: '700', color: 'var(--gray-900)', marginBottom: '8px' }}>Email Verified!</h2>
-              <p style={{ color: 'var(--gray-500)', fontSize: '14px', marginBottom: '28px' }}>Your email has been verified successfully. You can now login to your account.</p>
+              <p style={{ color: 'var(--gray-500)', fontSize: '14px', marginBottom: '28px' }}>Your email has been verified. You can now login.</p>
               <Link to="/dashboard" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px' }}>Go to Dashboard</Link>
             </>
           )}
@@ -38,7 +38,7 @@ const VerifyEmail = () => {
             <>
               <div style={{ fontSize: '56px', marginBottom: '16px' }}>❌</div>
               <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: '22px', fontWeight: '700', color: 'var(--gray-900)', marginBottom: '8px' }}>Verification Failed!</h2>
-              <p style={{ color: 'var(--gray-500)', fontSize: '14px', marginBottom: '28px' }}>The link is invalid or has expired. Please request a new verification email.</p>
+              <p style={{ color: 'var(--gray-500)', fontSize: '14px', marginBottom: '28px' }}>Link is invalid or expired.</p>
               <Link to="/login" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px' }}>Back to Login</Link>
             </>
           )}

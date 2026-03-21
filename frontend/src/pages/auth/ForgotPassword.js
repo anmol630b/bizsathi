@@ -31,7 +31,7 @@ const ForgotPassword = () => {
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <div style={{ width: '56px', height: '56px', background: 'linear-gradient(135deg, #1D9E75, #534AB7)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white', fontWeight: '700', fontSize: '24px', fontFamily: 'Poppins, sans-serif' }}>B</div>
             <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--gray-900)', fontFamily: 'Poppins, sans-serif', marginBottom: '8px' }}>Forgot Password?</h1>
-            <p style={{ color: 'var(--gray-500)', fontSize: '14px' }}>Enter your email and we'll send you a reset link</p>
+            <p style={{ color: 'var(--gray-500)', fontSize: '14px' }}>Enter your email and we will send you a reset link</p>
           </div>
 
           {sent ? (
