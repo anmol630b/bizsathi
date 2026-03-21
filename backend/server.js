@@ -41,7 +41,6 @@ app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/plans', require('./routes/plans'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/stores', require('./routes/stores'));
-app.use('/api/stores', require('./routes/stores'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'BizSathi API Running!', version: '1.0.0' });

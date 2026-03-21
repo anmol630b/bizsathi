@@ -130,7 +130,7 @@ const Customers = () => {
                           <FiShoppingBag size={12} /> {customer.totalOrders}
                         </div>
                       </td>
-                      <td style={{ fontWeight: '600', fontSize: '13px' }}>Rs.{customer.totalSpent.toLocaleString('en-IN')}</td>
+                      <td style={{ fontWeight: '600', fontSize: '13px' }}>₹{customer.totalSpent.toLocaleString('en-IN')}</td>
                       <td>
                         {customer.tags?.map(tag => (
                           <span key={tag} className="badge" style={{ background: tagColors[tag]?.bg, color: tagColors[tag]?.color, marginRight: '4px' }}>{tag}</span>
@@ -185,7 +185,7 @@ const Customers = () => {
                   <FiShoppingBag size={14} color="var(--primary)" />
                   <div>
                     <div style={{ fontSize: '11px', color: 'var(--primary)' }}>Total Spent</div>
-                    <div style={{ fontSize: '15px', fontWeight: '700', color: 'var(--primary)' }}>Rs.{selectedCustomer.totalSpent.toLocaleString('en-IN')}</div>
+                    <div style={{ fontSize: '15px', fontWeight: '700', color: 'var(--primary)' }}>₹{selectedCustomer.totalSpent.toLocaleString('en-IN')}</div>
                   </div>
                 </div>
               </div>

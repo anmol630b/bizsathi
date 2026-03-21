@@ -72,11 +72,13 @@ customerSchema.methods.updateTag = function() {
     this.tags = ['vip'];
   } else if (this.totalOrders >= 3) {
     this.tags = ['regular'];
+  } else {
+    this.tags = ['new'];
   }
   const daysSinceLastOrder = this.lastOrderDate
     ? (Date.now() - this.lastOrderDate) / (1000 * 60 * 60 * 24)
     : 999;
-  if (daysSinceLastOrder > 30) {
+  if (daysSinceLastOrder > 30 && !this.tags.includes('inactive')) {
     this.tags.push('inactive');
   }
   return this;

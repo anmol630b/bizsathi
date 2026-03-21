@@ -173,8 +173,6 @@ router.put('/custom-domain', protect, planCheck('pro'), async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // @route POST /api/business/update-location
 router.post('/update-location', protect, async (req, res) => {
   try {
@@ -189,3 +187,5 @@ router.post('/update-location', protect, async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
+module.exports = router;

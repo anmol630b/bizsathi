@@ -64,7 +64,7 @@ const Orders = () => {
   };
 
   const generateWhatsAppLink = (order) => {
-    const msg = `Hi ${order.customer.name},\n\nYour order #${order.orderNumber} has been confirmed!\n\nItems:\n${order.items.map(i => `- ${i.name} x${i.quantity}`).join('\n')}\n\nTotal: Rs.${order.total}\n\nThank you for your order!`;
+    const msg = `Hi ${order.customer.name},\n\nYour order #${order.orderNumber} has been confirmed!\n\nItems:\n${order.items.map(i => `- ${i.name} x${i.quantity}`).join('\n')}\n\nTotal: ₹${order.total}\n\nThank you for your order!`;
     return `https://wa.me/91${order.customer.phone}?text=${encodeURIComponent(msg)}`;
   };
 
@@ -134,7 +134,7 @@ const Orders = () => {
                           <div style={{ fontSize: '11px', color: 'var(--gray-400)' }}>{order.customer.phone}</div>
                         </td>
                         <td style={{ fontSize: '13px', color: 'var(--gray-500)' }}>{order.items.length} items</td>
-                        <td style={{ fontWeight: '600', fontSize: '14px', color: 'var(--gray-800)' }}>Rs.{order.total.toLocaleString('en-IN')}</td>
+                        <td style={{ fontWeight: '600', fontSize: '14px', color: 'var(--gray-800)' }}>₹{order.total.toLocaleString('en-IN')}</td>
                         <td>
                           <span className="badge" style={{ background: statusColors[order.orderStatus]?.bg, color: statusColors[order.orderStatus]?.color }}>
                             {order.orderStatus}
@@ -182,7 +182,7 @@ const Orders = () => {
                 ))}
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontWeight: '700', fontSize: '14px', borderTop: '2px solid var(--gray-200)', marginTop: '4px' }}>
                   <span>Total</span>
-                  <span style={{ color: 'var(--primary)' }}>Rs.{selectedOrder.total}</span>
+                  <span style={{ color: 'var(--primary)' }}>₹{selectedOrder.total}</span>
                 </div>
               </div>
               <div style={{ marginBottom: '16px' }}>

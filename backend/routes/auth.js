@@ -252,8 +252,6 @@ router.delete('/delete-address/:index', protect, async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // @route POST /api/auth/upload-avatar
 const { uploadAvatar, handleUploadError } = require('../middleware/upload');
 router.post('/upload-avatar', protect, uploadAvatar, handleUploadError, async (req, res) => {
@@ -266,3 +264,5 @@ router.post('/upload-avatar', protect, uploadAvatar, handleUploadError, async (r
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
+module.exports = router;
