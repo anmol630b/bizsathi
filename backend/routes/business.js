@@ -9,10 +9,10 @@ router.post('/create', protect, async (req, res) => {
   try {
     const existing = await Business.findOne({ owner: req.user._id });
     if (existing) {
-      return res.status(400).json({ success: false, message: 'Aapki business already exist karti hai' });
+      return res.status(400).json({ success: false, message: 'Business already exists' });
     }
     const business = await Business.create({ ...req.body, owner: req.user._id });
-    res.status(201).json({ success: true, message: 'Business ban gayi!', business });
+    res.status(201).json({ success: true, message: 'Business created!', business });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -23,7 +23,7 @@ router.get('/my', protect, async (req, res) => {
   try {
     const business = await Business.findOne({ owner: req.user._id });
     if (!business) {
-      return res.status(404).json({ success: false, message: 'Business nahi mili' });
+      return res.status(404).json({ success: false, message: 'Business not found' });
     }
     res.json({ success: true, business });
   } catch (error) {
@@ -40,9 +40,9 @@ router.put('/update', protect, async (req, res) => {
       { new: true, runValidators: true }
     );
     if (!business) {
-      return res.status(404).json({ success: false, message: 'Business nahi mili' });
+      return res.status(404).json({ success: false, message: 'Business not found' });
     }
-    res.json({ success: true, message: 'Business update ho gayi!', business });
+    res.json({ success: true, message: 'Business updated!', business });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -89,7 +89,7 @@ router.post('/publish', protect, async (req, res) => {
   try {
     const business = await Business.findOne({ owner: req.user._id });
     if (!business) {
-      return res.status(404).json({ success: false, message: 'Business nahi mili' });
+      return res.status(404).json({ success: false, message: 'Business not found' });
     }
     if (!business.name || !business.phone || !business.whatsapp) {
       return res.status(400).json({ success: false, message: 'Business name, phone aur whatsapp number zaroori hai' });
@@ -99,7 +99,7 @@ router.post('/publish', protect, async (req, res) => {
     await business.save();
     res.json({
       success: true,
-      message: 'Website publish ho gayi!',
+      message: 'Website is now LIVE!',
       url: `${process.env.FRONTEND_URL}/store/${business.slug}`,
       business
     });

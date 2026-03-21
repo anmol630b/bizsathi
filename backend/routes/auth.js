@@ -13,7 +13,7 @@ router.post('/register', async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ success: false, message: 'Email already registered hai' });
+      return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
     const emailToken = generateEmailToken(email);
@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Account ban gaya! Email verify karein.',
+      message: 'Account created! Please verify your email.',
       token,
       user: {
         id: user._id,
@@ -57,21 +57,21 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Email aur password daalein' });
+      return res.status(400).json({ success: false, message: 'Please enter email and password' });
     }
 
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Email ya password galat hai' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Email ya password galat hai' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
     if (!user.isActive) {
-      return res.status(401).json({ success: false, message: 'Account deactivated hai' });
+      return res.status(401).json({ success: false, message: 'Account is deactivated' });
     }
 
     user.lastLogin = Date.now();
@@ -110,7 +110,7 @@ router.get('/verify-email/:token', async (req, res) => {
     user.isEmailVerified = true;
     user.emailVerifyToken = undefined;
     await user.save();
-    res.json({ success: true, message: 'Email verify ho gaya!' });
+    res.json({ success: true, message: 'Email verified successfully!' });
   } catch (error) {
     res.status(400).json({ success: false, message: 'Token invalid ya expire ho gaya' });
   }
@@ -133,7 +133,7 @@ router.post('/forgot-password', async (req, res) => {
       subject: 'BizSathi - Password Reset',
       html: emailTemplates.resetPassword(user.name, resetToken)
     });
-    res.json({ success: true, message: 'Password reset email bhej diya gaya' });
+    res.json({ success: true, message: 'Password reset email sent' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -154,7 +154,7 @@ router.post('/reset-password/:token', async (req, res) => {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save();
-    res.json({ success: true, message: 'Password reset ho gaya!' });
+    res.json({ success: true, message: 'Password reset successfully!' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
