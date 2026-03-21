@@ -25,49 +25,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Phone number is required']
   },
-  avatar: {
-    type: String,
-    default: null
-  },
+  avatar: { type: String, default: null },
   userType: {
     type: String,
-    enum: ['seller', 'customer'],
-    default: 'seller'
+    enum: ['user', 'business'],
+    default: 'user'
   },
   plan: {
     type: String,
     enum: ['free', 'starter', 'pro', 'enterprise'],
     default: 'free'
   },
-  planExpiry: {
-    type: Date,
-    default: null
-  },
-  isEmailVerified: {
-    type: Boolean,
-    default: false
-  },
+  planExpiry: { type: Date, default: null },
+  isEmailVerified: { type: Boolean, default: false },
   emailVerifyToken: String,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  },
-  lastLogin: {
-    type: Date,
-    default: null
-  },
-  loginCount: {
-    type: Number,
-    default: 0
-  },
-  // Customer specific
+  isActive: { type: Boolean, default: true },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  lastLogin: { type: Date, default: null },
+  loginCount: { type: Number, default: 0 },
   savedAddresses: [{
     label: String,
     street: String,
@@ -76,17 +53,15 @@ const userSchema = new mongoose.Schema({
     pincode: String,
     isDefault: { type: Boolean, default: false }
   }],
-  favouriteStores: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Business'
-  }],
+  favouriteStores: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Business' }],
   orderHistory: [{
     business: { type: mongoose.Schema.Types.ObjectId, ref: 'Business' },
     businessName: String,
     items: String,
     total: Number,
     orderedAt: { type: Date, default: Date.now }
-  }]
+  }],
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
 }, { timestamps: true });
 
 userSchema.pre('save', async function(next) {

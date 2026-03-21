@@ -6,9 +6,13 @@ import useAuthStore from './store/authStore';
 import Landing from './pages/Landing';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import RegisterBusiness from './pages/auth/RegisterBusiness';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import VerifyEmail from './pages/auth/VerifyEmail';
+
+import UserDashboard from './pages/user/UserDashboard';
+
 import Dashboard from './pages/dashboard/Dashboard';
 import BusinessSetup from './pages/dashboard/BusinessSetup';
 import Products from './pages/dashboard/Products';
@@ -16,50 +20,56 @@ import Orders from './pages/dashboard/Orders';
 import Customers from './pages/dashboard/Customers';
 import Analytics from './pages/dashboard/Analytics';
 import Settings from './pages/dashboard/Settings';
+
 import Plans from './pages/Plans';
 import Store from './pages/store/Store';
 import StoreFinder from './pages/StoreFinder';
-import CustomerDashboard from './pages/customer/CustomerDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import NotFound from './pages/NotFound';
 
-const ProtectedRoute = ({ children, requiredType }) => {
+// Smart home - landing page for all, but content changes
+const SmartHome = () => {
+  return <Landing />;
+};
+
+// Business only route
+const BusinessRoute = ({ children }) => {
   const { token, user } = useAuthStore();
   if (!token) return <Navigate to="/login" replace />;
-  if (requiredType && user?.userType !== requiredType) {
-    return <Navigate to={user?.userType === 'customer' ? '/customer/dashboard' : '/dashboard'} replace />;
-  }
+  if (user?.userType !== 'business') return <Navigate to="/" replace />;
   return children;
 };
 
+// User only route
+const UserRoute = ({ children }) => {
+  const { token, user } = useAuthStore();
+  if (!token) return <Navigate to="/login" replace />;
+  if (user?.userType === 'business') return <Navigate to="/dashboard" replace />;
+  return children;
+};
+
+// Public route - redirect logged in users
 const PublicRoute = ({ children }) => {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   if (!token) return children;
-  return <Navigate to="/" replace />;
+  if (user?.userType === 'business') return <Navigate to="/dashboard" replace />;
+  return <Navigate to="/user/dashboard" replace />;
 };
 
 const AdminRoute = ({ children }) => {
   const { token, user } = useAuthStore();
   if (!token) return <Navigate to="/login" replace />;
-  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />;
+  if (user?.role !== 'admin') return <Navigate to="/" replace />;
   return children;
 };
 
 function App() {
   return (
     <Router>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 3000,
-          style: { borderRadius: '12px', background: '#0F172A', color: '#fff', fontSize: '14px', padding: '12px 16px', fontFamily: 'Inter, sans-serif' },
-          success: { iconTheme: { primary: '#00C896', secondary: '#fff' } },
-          error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } }
-        }}
-      />
+      <Toaster position="top-right" toastOptions={{ duration: 3000, style: { borderRadius: '12px', background: '#0F172A', color: '#fff', fontSize: '14px', padding: '12px 16px', fontFamily: 'Inter, sans-serif' }, success: { iconTheme: { primary: '#00C896', secondary: '#fff' } }, error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } } }} />
       <Routes>
         {/* Public */}
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<SmartHome />} />
         <Route path="/plans" element={<Plans />} />
         <Route path="/stores" element={<StoreFinder />} />
         <Route path="/store/:slug" element={<Store />} />
@@ -68,20 +78,21 @@ function App() {
         {/* Auth */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-        <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+        <Route path="/register-business" element={<PublicRoute><RegisterBusiness /></PublicRoute>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-        {/* Seller Dashboard */}
-        <Route path="/dashboard" element={<ProtectedRoute requiredType="seller"><Dashboard /></ProtectedRoute>} />
-        <Route path="/dashboard/setup" element={<ProtectedRoute requiredType="seller"><BusinessSetup /></ProtectedRoute>} />
-        <Route path="/dashboard/products" element={<ProtectedRoute requiredType="seller"><Products /></ProtectedRoute>} />
-        <Route path="/dashboard/orders" element={<ProtectedRoute requiredType="seller"><Orders /></ProtectedRoute>} />
-        <Route path="/dashboard/customers" element={<ProtectedRoute requiredType="seller"><Customers /></ProtectedRoute>} />
-        <Route path="/dashboard/analytics" element={<ProtectedRoute requiredType="seller"><Analytics /></ProtectedRoute>} />
-        <Route path="/dashboard/settings" element={<ProtectedRoute requiredType="seller"><Settings /></ProtectedRoute>} />
+        {/* Normal User Dashboard */}
+        <Route path="/user/dashboard" element={<UserRoute><UserDashboard /></UserRoute>} />
 
-        {/* Customer Dashboard */}
-        <Route path="/customer/dashboard" element={<ProtectedRoute requiredType="customer"><CustomerDashboard /></ProtectedRoute>} />
+        {/* Business Dashboard */}
+        <Route path="/dashboard" element={<BusinessRoute><Dashboard /></BusinessRoute>} />
+        <Route path="/dashboard/setup" element={<BusinessRoute><BusinessSetup /></BusinessRoute>} />
+        <Route path="/dashboard/products" element={<BusinessRoute><Products /></BusinessRoute>} />
+        <Route path="/dashboard/orders" element={<BusinessRoute><Orders /></BusinessRoute>} />
+        <Route path="/dashboard/customers" element={<BusinessRoute><Customers /></BusinessRoute>} />
+        <Route path="/dashboard/analytics" element={<BusinessRoute><Analytics /></BusinessRoute>} />
+        <Route path="/dashboard/settings" element={<BusinessRoute><Settings /></BusinessRoute>} />
 
         {/* Admin */}
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

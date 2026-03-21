@@ -33,16 +33,23 @@ const useAuthStore = create(
         }
       },
 
-      logout: () => {
-        set({ user: null, token: null });
+      registerBusiness: async (data) => {
+        set({ isLoading: true });
+        try {
+          const res = await api.post('/auth/register-business', data);
+          set({ user: res.data.user, token: res.data.token, isLoading: false });
+          return { success: true, userType: res.data.user.userType };
+        } catch (error) {
+          set({ isLoading: false });
+          return { success: false, message: error.response?.data?.message || 'Registration failed' };
+        }
       },
 
-      updateUser: (userData) => {
-        set({ user: { ...get().user, ...userData } });
-      }
+      logout: () => set({ user: null, token: null }),
+      updateUser: (userData) => set({ user: { ...get().user, ...userData } })
     }),
     {
-      name: 'bizsathi-auth-v2',
+      name: 'bizsathi-auth-v3',
       partialize: (state) => ({ user: state.user, token: state.token })
     }
   )
