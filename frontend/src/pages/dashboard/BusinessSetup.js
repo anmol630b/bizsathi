@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSave, FiGlobe, FiUpload, FiCheck } from 'react-icons/fi';
+import { FiGlobe, FiCheck } from 'react-icons/fi';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
@@ -18,9 +18,7 @@ const BusinessSetup = () => {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchBusiness();
-  }, []);
+  useEffect(() => { fetchBusiness(); }, []);
 
   const fetchBusiness = async () => {
     try {
@@ -54,7 +52,7 @@ const BusinessSetup = () => {
 
   const handleSave = async () => {
     if (!formData.name || !formData.phone || !formData.whatsapp) {
-      toast.error('Business name, phone aur WhatsApp number zaroori hai!');
+      toast.error('Business name, phone and WhatsApp number are required!');
       return;
     }
     setLoading(true);
@@ -65,11 +63,11 @@ const BusinessSetup = () => {
       } else {
         const res = await api.post('/business/create', formData);
         setBusiness(res.data.business);
-        toast.success('Business create ho gaya!');
+        toast.success('Business created!');
       }
       if (step < 3) setStep(step + 1);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error aaya!');
+      toast.error(err.response?.data?.message || 'Something went wrong!');
     } finally {
       setLoading(false);
     }
@@ -78,12 +76,12 @@ const BusinessSetup = () => {
   const handlePublish = async () => {
     setPublishing(true);
     try {
-      const res = await api.post('/business/publish');
-      toast.success('Website LIVE ho gayi!');
+      await api.post('/business/publish');
+      toast.success('Website is now LIVE!');
       setBusiness({ ...business, isPublished: true });
       navigate('/dashboard');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Publish nahi hua!');
+      toast.error(err.response?.data?.message || 'Could not publish!');
     } finally {
       setPublishing(false);
     }
@@ -119,39 +117,26 @@ const BusinessSetup = () => {
           <h2 style={{ fontSize: '24px', fontWeight: '700', fontFamily: 'Poppins, sans-serif', color: 'var(--gray-900)', marginBottom: '8px' }}>
             {business ? 'Update Business' : 'Setup Your Business'}
           </h2>
-          <p style={{ color: 'var(--gray-500)', fontSize: '14px' }}>Apni business ki details bharo aur website publish karo</p>
+          <p style={{ color: 'var(--gray-500)', fontSize: '14px' }}>Fill in your business details and publish your website</p>
         </div>
 
         {/* Steps */}
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '32px' }}>
           {steps.map((s, i) => (
             <React.Fragment key={s.num}>
-              <div
-                onClick={() => business && setStep(s.num)}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: business ? 'pointer' : 'default' }}
-              >
-                <div style={{
-                  width: '32px', height: '32px', borderRadius: '50%',
-                  background: step >= s.num ? 'var(--primary)' : 'var(--gray-200)',
-                  color: step >= s.num ? 'white' : 'var(--gray-400)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '13px', fontWeight: '600', transition: 'all 0.3s'
-                }}>
+              <div onClick={() => business && setStep(s.num)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: business ? 'pointer' : 'default' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step >= s.num ? 'var(--primary)' : 'var(--gray-200)', color: step >= s.num ? 'white' : 'var(--gray-400)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600', transition: 'all 0.3s' }}>
                   {step > s.num ? <FiCheck size={14} /> : s.num}
                 </div>
-                <span style={{ fontSize: '13px', fontWeight: step === s.num ? '600' : '400', color: step === s.num ? 'var(--primary)' : 'var(--gray-400)' }}>
-                  {s.label}
-                </span>
+                <span style={{ fontSize: '13px', fontWeight: step === s.num ? '600' : '400', color: step === s.num ? 'var(--primary)' : 'var(--gray-400)' }}>{s.label}</span>
               </div>
-              {i < steps.length - 1 && (
-                <div style={{ flex: 1, height: '2px', background: step > s.num ? 'var(--primary)' : 'var(--gray-200)', margin: '0 12px', transition: 'background 0.3s' }} />
-              )}
+              {i < steps.length - 1 && <div style={{ flex: 1, height: '2px', background: step > s.num ? 'var(--primary)' : 'var(--gray-200)', margin: '0 12px', transition: 'background 0.3s' }} />}
             </React.Fragment>
           ))}
         </div>
 
         <div className="card" style={{ padding: '32px' }}>
-          {/* Step 1 - Basic Info */}
+          {/* Step 1 */}
           {step === 1 && (
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Basic Information</h3>
@@ -161,22 +146,13 @@ const BusinessSetup = () => {
               </div>
               <div className="form-group">
                 <label className="form-label">Description</label>
-                <textarea name="description" className="form-textarea" placeholder="Apni business ke baare mein likhein..." value={formData.description} onChange={handleChange} rows={3} />
+                <textarea name="description" className="form-textarea" placeholder="Tell customers about your business..." value={formData.description} onChange={handleChange} rows={3} />
               </div>
               <div className="form-group">
                 <label className="form-label">Business Category *</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
                   {categories.map(cat => (
-                    <div
-                      key={cat.id}
-                      onClick={() => setFormData(prev => ({ ...prev, category: cat.id }))}
-                      style={{
-                        padding: '12px 8px', borderRadius: '10px', textAlign: 'center', cursor: 'pointer',
-                        border: `2px solid ${formData.category === cat.id ? 'var(--primary)' : 'var(--gray-200)'}`,
-                        background: formData.category === cat.id ? 'var(--primary-light)' : 'white',
-                        transition: 'all 0.2s'
-                      }}
-                    >
+                    <div key={cat.id} onClick={() => setFormData(prev => ({ ...prev, category: cat.id }))} style={{ padding: '12px 8px', borderRadius: '10px', textAlign: 'center', cursor: 'pointer', border: `2px solid ${formData.category === cat.id ? 'var(--primary)' : 'var(--gray-200)'}`, background: formData.category === cat.id ? 'var(--primary-light)' : 'white', transition: 'all 0.2s' }}>
                       <div style={{ fontSize: '22px', marginBottom: '4px' }}>{cat.emoji}</div>
                       <div style={{ fontSize: '11px', fontWeight: '500', color: formData.category === cat.id ? 'var(--primary)' : 'var(--gray-600)' }}>{cat.label}</div>
                     </div>
@@ -189,7 +165,7 @@ const BusinessSetup = () => {
             </div>
           )}
 
-          {/* Step 2 - Contact */}
+          {/* Step 2 */}
           {step === 2 && (
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Contact & Address</h3>
@@ -209,7 +185,7 @@ const BusinessSetup = () => {
               </div>
               <div className="form-group">
                 <label className="form-label">Street Address</label>
-                <input name="address.street" className="form-input" placeholder="Gali, Mohalla" value={formData.address.street} onChange={handleChange} />
+                <input name="address.street" className="form-input" placeholder="Street, Area" value={formData.address.street} onChange={handleChange} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                 <div className="form-group">
@@ -234,7 +210,7 @@ const BusinessSetup = () => {
             </div>
           )}
 
-          {/* Step 3 - Design & Publish */}
+          {/* Step 3 */}
           {step === 3 && (
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Choose Template & Publish</h3>
@@ -242,16 +218,7 @@ const BusinessSetup = () => {
                 <label className="form-label">Website Template</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
                   {templates.map(tmpl => (
-                    <div
-                      key={tmpl.id}
-                      onClick={() => setFormData(prev => ({ ...prev, template: tmpl.id }))}
-                      style={{
-                        padding: '16px 12px', borderRadius: '12px', textAlign: 'center', cursor: 'pointer',
-                        border: `2px solid ${formData.template === tmpl.id ? tmpl.color : 'var(--gray-200)'}`,
-                        background: formData.template === tmpl.id ? tmpl.color + '15' : 'white',
-                        transition: 'all 0.2s'
-                      }}
-                    >
+                    <div key={tmpl.id} onClick={() => setFormData(prev => ({ ...prev, template: tmpl.id }))} style={{ padding: '16px 12px', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', border: `2px solid ${formData.template === tmpl.id ? tmpl.color : 'var(--gray-200)'}`, background: formData.template === tmpl.id ? tmpl.color + '15' : 'white', transition: 'all 0.2s' }}>
                       <div style={{ fontSize: '28px', marginBottom: '6px' }}>{tmpl.emoji}</div>
                       <div style={{ fontSize: '13px', fontWeight: '600', color: formData.template === tmpl.id ? tmpl.color : 'var(--gray-700)' }}>{tmpl.name}</div>
                       <div style={{ fontSize: '11px', color: 'var(--gray-400)', marginTop: '2px' }}>{tmpl.desc}</div>
@@ -269,13 +236,13 @@ const BusinessSetup = () => {
                   <div style={{ fontSize: '15px', color: 'var(--gray-700)', wordBreak: 'break-all' }}>
                     {window.location.origin}/store/<strong>{business.slug}</strong>
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginTop: '6px' }}>Publish karne ke baad yeh URL active ho jayega</div>
+                  <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginTop: '6px' }}>This URL will be active after publishing</div>
                 </div>
               )}
 
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button onClick={() => setStep(2)} className="btn btn-outline" style={{ flex: 1, padding: '12px' }}>Back</button>
-                <button onClick={handlePublish} disabled={publishing} className="btn btn-primary" style={{ flex: 2, padding: '12px', gap: '8px', background: business?.isPublished ? 'var(--primary)' : 'linear-gradient(135deg, #1D9E75, #534AB7)' }}>
+                <button onClick={handlePublish} disabled={publishing} className="btn btn-primary" style={{ flex: 2, padding: '12px', gap: '8px' }}>
                   {publishing ? <div className="loading-spinner" style={{ width: '18px', height: '18px', borderWidth: '2px' }} /> : <><FiGlobe size={16} /> {business?.isPublished ? 'Update & Republish' : 'Publish Website'}</>}
                 </button>
               </div>

@@ -15,7 +15,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      toast.error('Email aur password daalein!');
+      toast.error('Please enter email and password!');
       return;
     }
     setLoading(true);
@@ -38,12 +38,12 @@ const Login = () => {
             <span style={{ fontSize: '24px', fontWeight: '700', fontFamily: 'Poppins, sans-serif' }}>BizSathi</span>
           </div>
           <h2 style={{ fontSize: '36px', fontWeight: '700', fontFamily: 'Poppins, sans-serif', marginBottom: '16px', lineHeight: '1.3' }}>
-            Apna Business<br />Next Level Pe Le Jao
+            Take Your Business<br />To The Next Level
           </h2>
           <p style={{ fontSize: '16px', opacity: '0.85', lineHeight: '1.7', marginBottom: '40px' }}>
-            Website, Orders, Customers aur Analytics sab ek jagah manage karo.
+            Website, Orders, Customers and Analytics — manage everything in one place.
           </p>
-          {['5 minute mein website ready', 'WhatsApp pe seedha orders', 'Free plan available'].map((item, i) => (
+          {['Website ready in 5 minutes', 'Orders directly on WhatsApp', 'Free plan available'].map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <div style={{ width: '20px', height: '20px', background: 'rgba(255,255,255,0.25)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px' }}>✓</div>
               <span style={{ fontSize: '15px', opacity: '0.9' }}>{item}</span>
@@ -60,7 +60,7 @@ const Login = () => {
               <span style={{ fontFamily: 'Poppins, sans-serif', fontWeight: '700', fontSize: '18px', color: 'var(--gray-900)' }}>BizSathi</span>
             </Link>
             <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--gray-900)', fontFamily: 'Poppins, sans-serif', marginBottom: '8px' }}>Welcome Back!</h1>
-            <p style={{ color: 'var(--gray-500)', fontSize: '15px' }}>Apne account mein login karein</p>
+            <p style={{ color: 'var(--gray-500)', fontSize: '15px' }}>Login to your account</p>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ const Login = () => {
               <label className="form-label">Email Address</label>
               <div style={{ position: 'relative' }}>
                 <FiMail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type="email" className="form-input" placeholder="aapka@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{ paddingLeft: '42px' }} />
+                <input type="email" className="form-input" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{ paddingLeft: '42px' }} />
               </div>
             </div>
 
@@ -79,7 +79,7 @@ const Login = () => {
               </div>
               <div style={{ position: 'relative' }}>
                 <FiLock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type={showPassword ? 'text' : 'password'} className="form-input" placeholder="password" value={password} onChange={e => setPassword(e.target.value)} style={{ paddingLeft: '42px', paddingRight: '42px' }} />
+                <input type={showPassword ? 'text' : 'password'} className="form-input" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ paddingLeft: '42px', paddingRight: '42px' }} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}>
                   {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                 </button>
@@ -87,13 +87,13 @@ const Login = () => {
             </div>
 
             <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', padding: '12px', fontSize: '15px', marginTop: '8px', borderRadius: '10px' }}>
-              {loading ? <div className="loading-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} /> : <> Login Karein <FiArrowRight size={16} /> </>}
+              {loading ? <div className="loading-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} /> : <> Login <FiArrowRight size={16} /> </>}
             </button>
           </form>
 
           <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: 'var(--gray-500)' }}>
-            Account nahi hai?{' '}
-            <Link to="/register" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Register Karein</Link>
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Register Now</Link>
           </div>
         </div>
       </div>

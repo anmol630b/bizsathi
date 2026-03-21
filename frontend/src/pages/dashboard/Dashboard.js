@@ -13,9 +13,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuthStore();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const fetchData = async () => {
     try {
@@ -35,10 +33,10 @@ const Dashboard = () => {
   };
 
   const statCards = [
-    { title: "Today's Orders", value: analytics?.today?.orders || 0, icon: FiShoppingCart, color: '#1D9E75', bg: '#E1F5EE', suffix: '' },
+    { title: "Today's Orders", value: analytics?.today?.orders || 0, icon: FiShoppingCart, color: '#1D9E75', bg: '#E1F5EE' },
     { title: "Today's Revenue", value: analytics?.today?.revenue || 0, icon: FiTrendingUp, color: '#534AB7', bg: '#EEEDFE', prefix: 'Rs.' },
-    { title: 'Total Customers', value: analytics?.total?.customers || 0, icon: FiUsers, color: '#D85A30', bg: '#FAECE7', suffix: '' },
-    { title: 'Total Products', value: analytics?.total?.products || 0, icon: FiShoppingBag, color: '#EF9F27', bg: '#FAEEDA', suffix: '' }
+    { title: 'Total Customers', value: analytics?.total?.customers || 0, icon: FiUsers, color: '#D85A30', bg: '#FAECE7' },
+    { title: 'Total Products', value: analytics?.total?.products || 0, icon: FiShoppingBag, color: '#EF9F27', bg: '#FAEEDA' }
   ];
 
   const statusColors = { new: '#534AB7', confirmed: '#1D9E75', processing: '#EF9F27', shipped: '#D85A30', delivered: '#1D9E75', cancelled: '#E24B4A' };
@@ -64,7 +62,7 @@ const Dashboard = () => {
               Welcome back, {user?.name?.split(' ')[0]}!
             </h2>
             <p style={{ opacity: '0.85', fontSize: '14px' }}>
-              {business ? `${business.name} - Your store is ${business.isPublished ? 'LIVE' : 'not published yet'}` : 'Setup your business to get started'}
+              {business ? `${business.name} — Your store is ${business.isPublished ? 'LIVE' : 'not published yet'}` : 'Setup your business to get started'}
             </p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
@@ -89,8 +87,8 @@ const Dashboard = () => {
           <div style={{ background: '#FAEEDA', border: '1px solid #EF9F27', borderRadius: '12px', padding: '16px 20px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <FiAlertCircle color="#EF9F27" size={20} />
             <div style={{ flex: 1 }}>
-              <p style={{ fontWeight: '600', color: '#854F0B', fontSize: '14px' }}>Business setup nahi hua!</p>
-              <p style={{ color: '#854F0B', fontSize: '13px', opacity: '0.8' }}>Pehle apni business setup karo, phir website aur orders sab kuch kaam karega.</p>
+              <p style={{ fontWeight: '600', color: '#854F0B', fontSize: '14px' }}>Business not setup yet!</p>
+              <p style={{ color: '#854F0B', fontSize: '13px', opacity: '0.8' }}>Please setup your business first, then your website and orders will work.</p>
             </div>
             <Link to="/dashboard/setup" className="btn btn-sm" style={{ background: '#EF9F27', color: 'white', border: 'none' }}>Setup Now</Link>
           </div>
@@ -107,7 +105,7 @@ const Dashboard = () => {
                 <span style={{ fontSize: '11px', color: 'var(--gray-400)', fontWeight: '500' }}>Today</span>
               </div>
               <div style={{ fontSize: '26px', fontWeight: '700', color: 'var(--gray-900)', fontFamily: 'Poppins, sans-serif' }}>
-                {stat.prefix}{stat.value.toLocaleString('en-IN')}{stat.suffix}
+                {stat.prefix}{stat.value.toLocaleString('en-IN')}
               </div>
               <div style={{ fontSize: '13px', color: 'var(--gray-400)', marginTop: '4px' }}>{stat.title}</div>
             </div>
@@ -116,7 +114,6 @@ const Dashboard = () => {
 
         {/* Charts + Recent Orders */}
         <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: '20px', marginBottom: '24px' }}>
-          {/* Revenue Chart */}
           <div className="card">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '15px', fontWeight: '600', color: 'var(--gray-800)' }}>Last 7 Days Revenue</h3>
@@ -139,7 +136,6 @@ const Dashboard = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* This Month Stats */}
           <div className="card">
             <h3 style={{ fontSize: '15px', fontWeight: '600', color: 'var(--gray-800)', marginBottom: '20px' }}>This Month</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -170,7 +166,7 @@ const Dashboard = () => {
             <div className="empty-state">
               <div className="empty-state-icon">📦</div>
               <h3>No orders yet</h3>
-              <p>Jab customers order karenge, yahan dikhenge</p>
+              <p>When customers place orders, they will appear here</p>
               {!business?.isPublished && (
                 <Link to="/dashboard/setup" className="btn btn-primary btn-sm">Publish Your Store</Link>
               )}

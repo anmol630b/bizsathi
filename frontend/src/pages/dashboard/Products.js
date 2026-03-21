@@ -22,7 +22,7 @@ const Products = () => {
       const res = await api.get('/products/my');
       setProducts(res.data.products || []);
     } catch (err) {
-      toast.error('Products load nahi hue!');
+      toast.error('Could not load products!');
     } finally {
       setLoading(false);
     }
@@ -31,7 +31,7 @@ const Products = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.price) {
-      toast.error('Name aur price zaroori hai!');
+      toast.error('Name and price are required!');
       return;
     }
     try {
@@ -40,25 +40,25 @@ const Products = () => {
         toast.success('Product updated!');
       } else {
         await api.post('/products/add', formData);
-        toast.success('Product add ho gaya!');
+        toast.success('Product added!');
       }
       setShowModal(false);
       setEditProduct(null);
       resetForm();
       fetchProducts();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error aaya!');
+      toast.error(err.response?.data?.message || 'Something went wrong!');
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Product delete karna chahte ho?')) return;
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
       await api.delete(`/products/${id}`);
       toast.success('Product deleted!');
       fetchProducts();
     } catch (err) {
-      toast.error('Delete nahi hua!');
+      toast.error('Could not delete!');
     }
   };
 
@@ -67,7 +67,7 @@ const Products = () => {
       await api.put(`/products/${id}/toggle`);
       fetchProducts();
     } catch (err) {
-      toast.error('Error aaya!');
+      toast.error('Something went wrong!');
     }
   };
 
@@ -76,7 +76,7 @@ const Products = () => {
       await api.put(`/products/${id}/featured`);
       fetchProducts();
     } catch (err) {
-      toast.error('Error aaya!');
+      toast.error('Something went wrong!');
     }
   };
 
@@ -100,7 +100,6 @@ const Products = () => {
   return (
     <DashboardLayout>
       <div className="fade-in">
-        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
             <h2 style={{ fontSize: '20px', fontWeight: '700', fontFamily: 'Poppins, sans-serif', color: 'var(--gray-900)' }}>Products</h2>
@@ -111,20 +110,18 @@ const Products = () => {
           </button>
         </div>
 
-        {/* Search */}
         <div style={{ position: 'relative', marginBottom: '20px', maxWidth: '400px' }}>
           <FiSearch size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
           <input className="form-input" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft: '42px' }} />
         </div>
 
-        {/* Products Grid */}
         {loading ? (
           <div className="page-loader"><div className="loading-spinner" /></div>
         ) : filtered.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-icon">📦</div>
             <h3>No products yet</h3>
-            <p>Apne store ke liye products add karo</p>
+            <p>Add products to your store</p>
             <button onClick={() => { resetForm(); setShowModal(true); }} className="btn btn-primary">Add First Product</button>
           </div>
         ) : (
@@ -132,17 +129,9 @@ const Products = () => {
             {filtered.map(product => (
               <div key={product._id} className="card" style={{ padding: '0', overflow: 'hidden' }}>
                 <div style={{ height: '140px', background: 'linear-gradient(135deg, var(--gray-100), var(--gray-50))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '48px', position: 'relative' }}>
-                  {product.images?.[0] ? (
-                    <img src={`http://localhost:5000${product.images[0]}`} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : '📦'}
-                  {product.isFeatured && (
-                    <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#EF9F27', color: 'white', padding: '2px 8px', borderRadius: '20px', fontSize: '10px', fontWeight: '600' }}>Featured</div>
-                  )}
-                  {!product.isAvailable && (
-                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: 'white', fontWeight: '600', fontSize: '13px' }}>Unavailable</span>
-                    </div>
-                  )}
+                  {product.images?.[0] ? <img src={`http://localhost:5000${product.images[0]}`} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '📦'}
+                  {product.isFeatured && <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#EF9F27', color: 'white', padding: '2px 8px', borderRadius: '20px', fontSize: '10px', fontWeight: '600' }}>Featured</div>}
+                  {!product.isAvailable && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: 'white', fontWeight: '600', fontSize: '13px' }}>Unavailable</span></div>}
                 </div>
                 <div style={{ padding: '16px' }}>
                   <h3 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--gray-800)', marginBottom: '4px' }}>{product.name}</h3>
@@ -153,18 +142,12 @@ const Products = () => {
                     {product.discountPrice && <span style={{ fontSize: '10px', background: 'var(--danger-light)', color: 'var(--danger)', padding: '1px 6px', borderRadius: '4px', fontWeight: '600' }}>{product.discountPercent}% OFF</span>}
                   </div>
                   <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                    <button onClick={() => openEdit(product)} className="btn btn-outline btn-sm" style={{ flex: 1, gap: '4px' }}>
-                      <FiEdit2 size={12} /> Edit
-                    </button>
+                    <button onClick={() => openEdit(product)} className="btn btn-outline btn-sm" style={{ flex: 1, gap: '4px' }}><FiEdit2 size={12} /> Edit</button>
                     <button onClick={() => handleToggle(product._id)} className="btn btn-sm" style={{ background: product.isAvailable ? 'var(--success-light)' : 'var(--gray-100)', color: product.isAvailable ? 'var(--success)' : 'var(--gray-500)', border: 'none' }}>
                       {product.isAvailable ? <FiToggleRight size={14} /> : <FiToggleLeft size={14} />}
                     </button>
-                    <button onClick={() => handleFeatured(product._id)} className="btn btn-sm" style={{ background: product.isFeatured ? '#FAEEDA' : 'var(--gray-100)', color: product.isFeatured ? '#EF9F27' : 'var(--gray-400)', border: 'none' }}>
-                      <FiStar size={14} />
-                    </button>
-                    <button onClick={() => handleDelete(product._id)} className="btn btn-sm" style={{ background: 'var(--danger-light)', color: 'var(--danger)', border: 'none' }}>
-                      <FiTrash2 size={14} />
-                    </button>
+                    <button onClick={() => handleFeatured(product._id)} className="btn btn-sm" style={{ background: product.isFeatured ? '#FAEEDA' : 'var(--gray-100)', color: product.isFeatured ? '#EF9F27' : 'var(--gray-400)', border: 'none' }}><FiStar size={14} /></button>
+                    <button onClick={() => handleDelete(product._id)} className="btn btn-sm" style={{ background: 'var(--danger-light)', color: 'var(--danger)', border: 'none' }}><FiTrash2 size={14} /></button>
                   </div>
                 </div>
               </div>
@@ -173,7 +156,6 @@ const Products = () => {
         )}
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
           <div className="card" style={{ width: '100%', maxWidth: '520px', maxHeight: '90vh', overflowY: 'auto', padding: '28px' }}>
@@ -184,7 +166,7 @@ const Products = () => {
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label className="form-label">Product Name *</label>
-                <input className="form-input" placeholder="Product ka naam" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                <input className="form-input" placeholder="Product name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
               </div>
               <div className="form-group">
                 <label className="form-label">Description</label>

@@ -16,22 +16,22 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.phone || !formData.password) {
-      toast.error('Sab fields bharen!');
+      toast.error('Please fill all fields!');
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords match nahi kar rahe!');
+      toast.error('Passwords do not match!');
       return;
     }
     if (formData.password.length < 6) {
-      toast.error('Password kam se kam 6 characters ka hona chahiye!');
+      toast.error('Password must be at least 6 characters!');
       return;
     }
     setLoading(true);
     const result = await register(formData);
     setLoading(false);
     if (result.success) {
-      toast.success('Account ban gaya! Welcome to BizSathi!');
+      toast.success('Account created! Welcome to BizSathi!');
       navigate('/dashboard/setup');
     } else {
       toast.error(result.message);
@@ -47,15 +47,15 @@ const Register = () => {
             <span style={{ fontSize: '24px', fontWeight: '700', fontFamily: 'Poppins, sans-serif' }}>BizSathi</span>
           </div>
           <h2 style={{ fontSize: '36px', fontWeight: '700', fontFamily: 'Poppins, sans-serif', marginBottom: '16px', lineHeight: '1.3' }}>
-            Apni Dukaan Ki<br />Website Banao Free Mein!
+            Build Your Store<br />Website For Free!
           </h2>
           <p style={{ fontSize: '16px', opacity: '0.85', lineHeight: '1.7', marginBottom: '32px' }}>
-            India ke 10,000+ business owners already BizSathi use kar rahe hain.
+            Join 10,000+ business owners already using BizSathi.
           </p>
           {[
-            { icon: '🌐', text: 'Professional website 5 min mein' },
-            { icon: '📱', text: 'WhatsApp pe seedha orders' },
-            { icon: '📊', text: 'Sales analytics aur reports' },
+            { icon: '🌐', text: 'Professional website in 5 minutes' },
+            { icon: '📱', text: 'Orders directly on WhatsApp' },
+            { icon: '📊', text: 'Sales analytics and reports' },
             { icon: '👥', text: 'Customer management system' }
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px', background: 'rgba(255,255,255,0.1)', padding: '12px 16px', borderRadius: '10px' }}>
@@ -73,8 +73,8 @@ const Register = () => {
               <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #1D9E75, #534AB7)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '16px' }}>B</div>
               <span style={{ fontFamily: 'Poppins, sans-serif', fontWeight: '700', fontSize: '18px', color: 'var(--gray-900)' }}>BizSathi</span>
             </Link>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--gray-900)', fontFamily: 'Poppins, sans-serif', marginBottom: '8px' }}>Account Banao</h1>
-            <p style={{ color: 'var(--gray-500)', fontSize: '15px' }}>Free mein shuru karo, koi credit card nahi chahiye</p>
+            <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--gray-900)', fontFamily: 'Poppins, sans-serif', marginBottom: '8px' }}>Create Account</h1>
+            <p style={{ color: 'var(--gray-500)', fontSize: '15px' }}>Start for free, no credit card required</p>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -82,7 +82,7 @@ const Register = () => {
               <label className="form-label">Full Name</label>
               <div style={{ position: 'relative' }}>
                 <FiUser size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type="text" name="name" className="form-input" placeholder="Aapka naam" value={formData.name} onChange={handleChange} style={{ paddingLeft: '42px' }} />
+                <input type="text" name="name" className="form-input" placeholder="Your full name" value={formData.name} onChange={handleChange} style={{ paddingLeft: '42px' }} />
               </div>
             </div>
 
@@ -90,7 +90,7 @@ const Register = () => {
               <label className="form-label">Email Address</label>
               <div style={{ position: 'relative' }}>
                 <FiMail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type="email" name="email" className="form-input" placeholder="aapka@email.com" value={formData.email} onChange={handleChange} style={{ paddingLeft: '42px' }} />
+                <input type="email" name="email" className="form-input" placeholder="your@email.com" value={formData.email} onChange={handleChange} style={{ paddingLeft: '42px' }} />
               </div>
             </div>
 
@@ -106,7 +106,7 @@ const Register = () => {
               <label className="form-label">Password</label>
               <div style={{ position: 'relative' }}>
                 <FiLock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type={showPassword ? 'text' : 'password'} name="password" className="form-input" placeholder="Kam se kam 6 characters" value={formData.password} onChange={handleChange} style={{ paddingLeft: '42px', paddingRight: '42px' }} />
+                <input type={showPassword ? 'text' : 'password'} name="password" className="form-input" placeholder="At least 6 characters" value={formData.password} onChange={handleChange} style={{ paddingLeft: '42px', paddingRight: '42px' }} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}>
                   {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                 </button>
@@ -117,22 +117,22 @@ const Register = () => {
               <label className="form-label">Confirm Password</label>
               <div style={{ position: 'relative' }}>
                 <FiLock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type="password" name="confirmPassword" className="form-input" placeholder="Password dobara likhein" value={formData.confirmPassword} onChange={handleChange} style={{ paddingLeft: '42px' }} />
+                <input type="password" name="confirmPassword" className="form-input" placeholder="Re-enter password" value={formData.confirmPassword} onChange={handleChange} style={{ paddingLeft: '42px' }} />
               </div>
             </div>
 
             <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', padding: '12px', fontSize: '15px', marginTop: '4px', borderRadius: '10px' }}>
-              {loading ? <div className="loading-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} /> : <> Free Account Banao <FiArrowRight size={16} /> </>}
+              {loading ? <div className="loading-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} /> : <> Create Free Account <FiArrowRight size={16} /> </>}
             </button>
           </form>
 
           <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '12px', color: 'var(--gray-400)', lineHeight: '1.6' }}>
-            Register karke aap hamare Terms of Service aur Privacy Policy se agree karte hain.
+            By registering, you agree to our Terms of Service and Privacy Policy.
           </p>
 
           <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '14px', color: 'var(--gray-500)' }}>
-            Already account hai?{' '}
-            <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Login Karein</Link>
+            Already have an account?{' '}
+            <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Login</Link>
           </div>
         </div>
       </div>

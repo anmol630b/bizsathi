@@ -32,7 +32,7 @@ const Orders = () => {
       setOrders(res.data.orders || []);
       setPagination(res.data.pagination || {});
     } catch (err) {
-      toast.error('Orders load nahi hue!');
+      toast.error('Could not load orders!');
     } finally {
       setLoading(false);
     }
@@ -47,24 +47,24 @@ const Orders = () => {
         setSelectedOrder({ ...selectedOrder, orderStatus: status });
       }
     } catch (err) {
-      toast.error('Update nahi hua!');
+      toast.error('Could not update!');
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Order delete karna chahte ho?')) return;
+    if (!window.confirm('Are you sure you want to delete this order?')) return;
     try {
       await api.delete(`/orders/${id}`);
       toast.success('Order deleted!');
       fetchOrders();
       setSelectedOrder(null);
     } catch (err) {
-      toast.error('Delete nahi hua!');
+      toast.error('Could not delete!');
     }
   };
 
   const generateWhatsAppLink = (order) => {
-    const msg = `Hi ${order.customer.name},\n\nAapka order #${order.orderNumber} confirm ho gaya!\n\nItems:\n${order.items.map(i => `- ${i.name} x${i.quantity}`).join('\n')}\n\nTotal: Rs.${order.total}\n\nThank you for ordering from us!`;
+    const msg = `Hi ${order.customer.name},\n\nYour order #${order.orderNumber} has been confirmed!\n\nItems:\n${order.items.map(i => `- ${i.name} x${i.quantity}`).join('\n')}\n\nTotal: Rs.${order.total}\n\nThank you for your order!`;
     return `https://wa.me/91${order.customer.phone}?text=${encodeURIComponent(msg)}`;
   };
 
@@ -78,7 +78,6 @@ const Orders = () => {
           </div>
         </div>
 
-        {/* Filters */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
             <FiSearch size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
@@ -90,7 +89,6 @@ const Orders = () => {
           </select>
         </div>
 
-        {/* Status Pills */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
           {['', 'new', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map(s => (
             <button key={s} onClick={() => setStatusFilter(s)} className="btn btn-sm" style={{
@@ -104,7 +102,6 @@ const Orders = () => {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: selectedOrder ? '1fr 380px' : '1fr', gap: '20px' }}>
-          {/* Orders Table */}
           <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
             {loading ? (
               <div className="page-loader"><div className="loading-spinner" /></div>
@@ -112,7 +109,7 @@ const Orders = () => {
               <div className="empty-state">
                 <div className="empty-state-icon">📦</div>
                 <h3>No orders found</h3>
-                <p>Jab customers order karenge, yahan dikhenge</p>
+                <p>When customers place orders, they will appear here</p>
               </div>
             ) : (
               <div style={{ overflowX: 'auto' }}>
@@ -146,15 +143,9 @@ const Orders = () => {
                         <td style={{ fontSize: '12px', color: 'var(--gray-400)' }}>{new Date(order.createdAt).toLocaleDateString('en-IN')}</td>
                         <td>
                           <div style={{ display: 'flex', gap: '6px' }} onClick={e => e.stopPropagation()}>
-                            <a href={generateWhatsAppLink(order)} target="_blank" rel="noreferrer" className="btn btn-sm btn-whatsapp" style={{ padding: '5px 8px' }}>
-                              <FiMessageCircle size={13} />
-                            </a>
-                            <button onClick={() => setSelectedOrder(order)} className="btn btn-sm btn-outline" style={{ padding: '5px 8px' }}>
-                              <FiEye size={13} />
-                            </button>
-                            <button onClick={() => handleDelete(order._id)} className="btn btn-sm" style={{ padding: '5px 8px', background: 'var(--danger-light)', color: 'var(--danger)', border: 'none' }}>
-                              <FiTrash2 size={13} />
-                            </button>
+                            <a href={generateWhatsAppLink(order)} target="_blank" rel="noreferrer" className="btn btn-sm btn-whatsapp" style={{ padding: '5px 8px' }}><FiMessageCircle size={13} /></a>
+                            <button onClick={() => setSelectedOrder(order)} className="btn btn-sm btn-outline" style={{ padding: '5px 8px' }}><FiEye size={13} /></button>
+                            <button onClick={() => handleDelete(order._id)} className="btn btn-sm" style={{ padding: '5px 8px', background: 'var(--danger-light)', color: 'var(--danger)', border: 'none' }}><FiTrash2 size={13} /></button>
                           </div>
                         </td>
                       </tr>
@@ -165,30 +156,22 @@ const Orders = () => {
             )}
           </div>
 
-          {/* Order Detail Panel */}
           {selectedOrder && (
             <div className="card" style={{ padding: '24px', height: 'fit-content', position: 'sticky', top: '80px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: '600' }}>Order Details</h3>
                 <button onClick={() => setSelectedOrder(null)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--gray-400)' }}>×</button>
               </div>
-
               <div style={{ marginBottom: '16px', padding: '12px', background: 'var(--gray-50)', borderRadius: '10px' }}>
                 <div style={{ fontSize: '12px', color: 'var(--gray-400)' }}>Order Number</div>
                 <div style={{ fontWeight: '700', color: 'var(--primary)', fontSize: '15px' }}>{selectedOrder.orderNumber}</div>
               </div>
-
               <div style={{ marginBottom: '16px' }}>
                 <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginBottom: '6px' }}>Customer</div>
                 <div style={{ fontWeight: '600', fontSize: '14px' }}>{selectedOrder.customer.name}</div>
                 <div style={{ fontSize: '13px', color: 'var(--gray-500)' }}>{selectedOrder.customer.phone}</div>
-                {selectedOrder.customer.address?.city && (
-                  <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginTop: '2px' }}>
-                    {selectedOrder.customer.address.city}, {selectedOrder.customer.address.state}
-                  </div>
-                )}
+                {selectedOrder.customer.address?.city && <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginTop: '2px' }}>{selectedOrder.customer.address.city}, {selectedOrder.customer.address.state}</div>}
               </div>
-
               <div style={{ marginBottom: '16px' }}>
                 <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginBottom: '8px' }}>Items</div>
                 {selectedOrder.items.map((item, i) => (
@@ -202,7 +185,6 @@ const Orders = () => {
                   <span style={{ color: 'var(--primary)' }}>Rs.{selectedOrder.total}</span>
                 </div>
               </div>
-
               <div style={{ marginBottom: '16px' }}>
                 <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginBottom: '8px' }}>Update Status</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -212,13 +194,10 @@ const Orders = () => {
                       color: selectedOrder.orderStatus === s ? statusColors[s].color : 'var(--gray-500)',
                       border: selectedOrder.orderStatus === s ? `1.5px solid ${statusColors[s].color}` : '1.5px solid transparent',
                       fontWeight: selectedOrder.orderStatus === s ? '600' : '400'
-                    }}>
-                      {s.charAt(0).toUpperCase() + s.slice(1)}
-                    </button>
+                    }}>{s.charAt(0).toUpperCase() + s.slice(1)}</button>
                   ))}
                 </div>
               </div>
-
               <a href={generateWhatsAppLink(selectedOrder)} target="_blank" rel="noreferrer" className="btn btn-whatsapp" style={{ width: '100%', justifyContent: 'center', gap: '8px', padding: '12px' }}>
                 <FiMessageCircle size={16} /> Send WhatsApp Update
               </a>

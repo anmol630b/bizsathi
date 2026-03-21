@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiSearch, FiUser, FiPhone, FiMail, FiShoppingBag, FiMessageCircle, FiTrash2 } from 'react-icons/fi';
+import { FiSearch, FiPhone, FiMail, FiShoppingBag, FiMessageCircle, FiTrash2 } from 'react-icons/fi';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
@@ -30,21 +30,21 @@ const Customers = () => {
       setCustomers(res.data.customers || []);
       setPagination(res.data.pagination || {});
     } catch (err) {
-      toast.error('Customers load nahi hue!');
+      toast.error('Could not load customers!');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Customer delete karna chahte ho?')) return;
+    if (!window.confirm('Are you sure you want to delete this customer?')) return;
     try {
       await api.delete(`/customers/${id}`);
       toast.success('Customer deleted!');
       fetchCustomers();
       setSelectedCustomer(null);
     } catch (err) {
-      toast.error('Delete nahi hua!');
+      toast.error('Could not delete!');
     }
   };
 
@@ -54,7 +54,7 @@ const Customers = () => {
       toast.success('Customer status updated!');
       fetchCustomers();
     } catch (err) {
-      toast.error('Error aaya!');
+      toast.error('Something went wrong!');
     }
   };
 
@@ -68,7 +68,6 @@ const Customers = () => {
           </div>
         </div>
 
-        {/* Search & Filter */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
             <FiSearch size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
@@ -76,7 +75,6 @@ const Customers = () => {
           </div>
         </div>
 
-        {/* Tag Filter Pills */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
           {['', 'new', 'regular', 'vip', 'inactive'].map(tag => (
             <button key={tag} onClick={() => setTagFilter(tag)} className="btn btn-sm" style={{
@@ -90,7 +88,6 @@ const Customers = () => {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: selectedCustomer ? '1fr 360px' : '1fr', gap: '20px' }}>
-          {/* Customers Table */}
           <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
             {loading ? (
               <div className="page-loader"><div className="loading-spinner" /></div>
@@ -98,7 +95,7 @@ const Customers = () => {
               <div className="empty-state">
                 <div className="empty-state-icon">👥</div>
                 <h3>No customers yet</h3>
-                <p>Jab customers order karenge, automatically yahan save honge</p>
+                <p>Customers will be saved automatically when they place orders</p>
               </div>
             ) : (
               <table className="table">
@@ -142,12 +139,8 @@ const Customers = () => {
                       <td style={{ fontSize: '12px', color: 'var(--gray-400)' }}>{new Date(customer.createdAt).toLocaleDateString('en-IN')}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '6px' }} onClick={e => e.stopPropagation()}>
-                          <a href={`https://wa.me/91${customer.phone}`} target="_blank" rel="noreferrer" className="btn btn-sm btn-whatsapp" style={{ padding: '5px 8px' }}>
-                            <FiMessageCircle size={13} />
-                          </a>
-                          <button onClick={() => handleDelete(customer._id)} className="btn btn-sm" style={{ padding: '5px 8px', background: 'var(--danger-light)', color: 'var(--danger)', border: 'none' }}>
-                            <FiTrash2 size={13} />
-                          </button>
+                          <a href={`https://wa.me/91${customer.phone}`} target="_blank" rel="noreferrer" className="btn btn-sm btn-whatsapp" style={{ padding: '5px 8px' }}><FiMessageCircle size={13} /></a>
+                          <button onClick={() => handleDelete(customer._id)} className="btn btn-sm" style={{ padding: '5px 8px', background: 'var(--danger-light)', color: 'var(--danger)', border: 'none' }}><FiTrash2 size={13} /></button>
                         </div>
                       </td>
                     </tr>
@@ -157,14 +150,12 @@ const Customers = () => {
             )}
           </div>
 
-          {/* Customer Detail Panel */}
           {selectedCustomer && (
             <div className="card" style={{ padding: '24px', height: 'fit-content', position: 'sticky', top: '80px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: '600' }}>Customer Details</h3>
                 <button onClick={() => setSelectedCustomer(null)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--gray-400)' }}>×</button>
               </div>
-
               <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                 <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary-light), var(--primary))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '22px', margin: '0 auto 12px' }}>
                   {selectedCustomer.name.charAt(0).toUpperCase()}
@@ -176,7 +167,6 @@ const Customers = () => {
                   ))}
                 </div>
               </div>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
                 {[
                   { icon: FiPhone, label: 'Phone', value: selectedCustomer.phone },
@@ -199,10 +189,9 @@ const Customers = () => {
                   </div>
                 </div>
               </div>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <a href={`https://wa.me/91${selectedCustomer.phone}`} target="_blank" rel="noreferrer" className="btn btn-whatsapp" style={{ width: '100%', justifyContent: 'center', gap: '8px' }}>
-                  <FiMessageCircle size={16} /> WhatsApp Karo
+                  <FiMessageCircle size={16} /> Send WhatsApp
                 </a>
                 <button onClick={() => handleBlock(selectedCustomer._id)} className="btn btn-outline" style={{ width: '100%' }}>
                   {selectedCustomer.isBlocked ? 'Unblock Customer' : 'Block Customer'}
