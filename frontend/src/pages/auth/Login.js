@@ -14,10 +14,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error('Please enter email and password!');
-      return;
-    }
+    if (!email || !password) { toast.error('Please enter email and password!'); return; }
     setLoading(true);
     const result = await login(email, password);
     setLoading(false);
@@ -30,70 +27,94 @@ const Login = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: 'linear-gradient(135deg, #f0fdf8 0%, #eeedfe 100%)' }}>
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', background: 'linear-gradient(135deg, #1D9E75, #534AB7)' }} className="hide-mobile">
-        <div style={{ color: 'white', maxWidth: '400px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' }}>
-            <div style={{ width: '48px', height: '48px', background: 'rgba(255,255,255,0.2)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '700', fontFamily: 'Poppins, sans-serif' }}>B</div>
-            <span style={{ fontSize: '24px', fontWeight: '700', fontFamily: 'Poppins, sans-serif' }}>BizSathi</span>
+    <div style={{ minHeight: '100vh', display: 'flex', background: '#0F172A' }}>
+
+      {/* Left - Branding */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px', position: 'relative', overflow: 'hidden' }} className="hide-mobile">
+        <div style={{ position: 'absolute', top: '10%', right: '10%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(0,200,150,0.12) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '10%', left: '10%', width: '250px', height: '250px', background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '400px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '56px' }}>
+            <div style={{ width: '38px', height: '38px', background: 'linear-gradient(135deg, #00C896, #6366F1)', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '18px', fontFamily: 'Plus Jakarta Sans, sans-serif', boxShadow: '0 4px 14px rgba(0,200,150,0.3)' }}>B</div>
+            <span style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: '800', fontSize: '20px', color: 'white', letterSpacing: '-0.02em' }}>BizSathi</span>
           </div>
-          <h2 style={{ fontSize: '36px', fontWeight: '700', fontFamily: 'Poppins, sans-serif', marginBottom: '16px', lineHeight: '1.3' }}>
-            Take Your Business<br />To The Next Level
+
+          <h2 style={{ fontSize: '40px', fontWeight: '800', fontFamily: 'Plus Jakarta Sans, sans-serif', color: 'white', marginBottom: '16px', lineHeight: '1.15', letterSpacing: '-0.03em' }}>
+            Grow your<br />
+            <span style={{ background: 'linear-gradient(135deg, #00C896, #6366F1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>business faster</span>
           </h2>
-          <p style={{ fontSize: '16px', opacity: '0.85', lineHeight: '1.7', marginBottom: '40px' }}>
-            Website, Orders, Customers and Analytics — manage everything in one place.
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.45)', lineHeight: '1.7', marginBottom: '48px' }}>
+            Manage your store, track orders, and grow your customer base — all from one powerful dashboard.
           </p>
-          {['Website ready in 5 minutes', 'Orders directly on WhatsApp', 'Free plan available'].map((item, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <div style={{ width: '20px', height: '20px', background: 'rgba(255,255,255,0.25)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px' }}>✓</div>
-              <span style={{ fontSize: '15px', opacity: '0.9' }}>{item}</span>
+
+          {[
+            { icon: '⚡', text: 'Website ready in 5 minutes' },
+            { icon: '💬', text: 'Orders directly on WhatsApp' },
+            { icon: '📊', text: 'Real-time analytics & insights' }
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', border: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>{item.icon}</div>
+              <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', fontWeight: '500' }}>{item.text}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', background: 'white' }}>
-        <div style={{ width: '100%', maxWidth: '420px' }}>
-          <div style={{ marginBottom: '36px' }}>
-            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '32px', textDecoration: 'none' }}>
-              <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #1D9E75, #534AB7)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '16px' }}>B</div>
-              <span style={{ fontFamily: 'Poppins, sans-serif', fontWeight: '700', fontSize: '18px', color: 'var(--gray-900)' }}>BizSathi</span>
-            </Link>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--gray-900)', fontFamily: 'Poppins, sans-serif', marginBottom: '8px' }}>Welcome Back!</h1>
-            <p style={{ color: 'var(--gray-500)', fontSize: '15px' }}>Login to your account</p>
+      {/* Right - Form */}
+      <div style={{ width: '480px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', background: 'white', borderRadius: '0' }}>
+        <div style={{ width: '100%', maxWidth: '380px' }}>
+
+          {/* Mobile Logo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '36px' }}>
+            <div style={{ width: '32px', height: '32px', background: 'linear-gradient(135deg, #00C896, #6366F1)', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '15px' }}>B</div>
+            <span style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: '800', fontSize: '17px', color: '#0F172A', letterSpacing: '-0.02em' }}>BizSathi</span>
           </div>
 
+          <h1 style={{ fontSize: '26px', fontWeight: '800', color: '#0F172A', fontFamily: 'Plus Jakarta Sans, sans-serif', marginBottom: '6px', letterSpacing: '-0.02em' }}>Welcome back</h1>
+          <p style={{ color: '#94A3B8', fontSize: '14px', marginBottom: '32px', fontWeight: '400' }}>Sign in to your account to continue</p>
+
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label">Email Address</label>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#475569', marginBottom: '6px', letterSpacing: '0.01em' }}>Email Address</label>
               <div style={{ position: 'relative' }}>
-                <FiMail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type="email" className="form-input" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{ paddingLeft: '42px' }} />
+                <FiMail size={15} style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: '#CBD5E1' }} />
+                <input type="email" className="form-input" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} style={{ paddingLeft: '40px', height: '44px', borderRadius: '10px', fontSize: '14px' }} />
               </div>
             </div>
 
-            <div className="form-group">
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                <label className="form-label" style={{ margin: 0 }}>Password</label>
-                <Link to="/forgot-password" style={{ fontSize: '12px', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</Link>
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <label style={{ fontSize: '12px', fontWeight: '600', color: '#475569', letterSpacing: '0.01em' }}>Password</label>
+                <Link to="/forgot-password" style={{ fontSize: '12px', color: '#00C896', fontWeight: '600', textDecoration: 'none' }}>Forgot password?</Link>
               </div>
               <div style={{ position: 'relative' }}>
-                <FiLock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gray-400)' }} />
-                <input type={showPassword ? 'text' : 'password'} className="form-input" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ paddingLeft: '42px', paddingRight: '42px' }} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}>
-                  {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                <FiLock size={15} style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: '#CBD5E1' }} />
+                <input type={showPassword ? 'text' : 'password'} className="form-input" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ paddingLeft: '40px', paddingRight: '40px', height: '44px', borderRadius: '10px', fontSize: '14px' }} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '13px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer', display: 'flex', padding: 0 }}>
+                  {showPassword ? <FiEyeOff size={15} /> : <FiEye size={15} />}
                 </button>
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', padding: '12px', fontSize: '15px', marginTop: '8px', borderRadius: '10px' }}>
-              {loading ? <div className="loading-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} /> : <> Login <FiArrowRight size={16} /> </>}
+            <button type="submit" disabled={loading} style={{ width: '100%', height: '46px', background: loading ? '#E2E8F0' : 'linear-gradient(135deg, #00C896, #00A87E)', color: loading ? '#94A3B8' : 'white', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: '700', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s', boxShadow: loading ? 'none' : '0 4px 14px rgba(0,200,150,0.3)', fontFamily: 'Inter, sans-serif', letterSpacing: '-0.01em' }}>
+              {loading ? (
+                <div style={{ width: '18px', height: '18px', border: '2px solid #CBD5E1', borderTopColor: '#00C896', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              ) : (
+                <> Sign In <FiArrowRight size={15} /> </>
+              )}
             </button>
           </form>
 
-          <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: 'var(--gray-500)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '24px 0' }}>
+            <div style={{ flex: 1, height: '1px', background: '#F1F5F9' }} />
+            <span style={{ fontSize: '12px', color: '#CBD5E1', fontWeight: '500' }}>OR</span>
+            <div style={{ flex: 1, height: '1px', background: '#F1F5F9' }} />
+          </div>
+
+          <div style={{ textAlign: 'center', fontSize: '14px', color: '#64748B' }}>
             Don't have an account?{' '}
-            <Link to="/register" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Register Now</Link>
+            <Link to="/register" style={{ color: '#00C896', fontWeight: '700', textDecoration: 'none' }}>Create one free</Link>
           </div>
         </div>
       </div>
