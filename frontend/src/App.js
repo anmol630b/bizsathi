@@ -46,7 +46,7 @@ function App() {
         position="top-right"
         toastOptions={{
           duration: 3000,
-          style: { borderRadius: '12px', background: '#0F172A', color: '#fff', fontSize: '14px', padding: '12px 16px' },
+          style: { borderRadius: '12px', background: '#0F172A', color: '#fff', fontSize: '14px', padding: '12px 16px', fontFamily: 'Inter, sans-serif' },
           success: { iconTheme: { primary: '#00C896', secondary: '#fff' } },
           error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } }
         }}
