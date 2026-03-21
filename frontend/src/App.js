@@ -19,17 +19,23 @@ import Settings from './pages/dashboard/Settings';
 import Plans from './pages/Plans';
 import Store from './pages/store/Store';
 import StoreFinder from './pages/StoreFinder';
+import CustomerDashboard from './pages/customer/CustomerDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import NotFound from './pages/NotFound';
 
-const ProtectedRoute = ({ children }) => {
-  const { token } = useAuthStore();
-  return token ? children : <Navigate to="/login" replace />;
+const ProtectedRoute = ({ children, requiredType }) => {
+  const { token, user } = useAuthStore();
+  if (!token) return <Navigate to="/login" replace />;
+  if (requiredType && user?.userType !== requiredType) {
+    return <Navigate to={user?.userType === 'customer' ? '/customer/dashboard' : '/dashboard'} replace />;
+  }
+  return children;
 };
 
 const PublicRoute = ({ children }) => {
-  const { token } = useAuthStore();
-  return !token ? children : <Navigate to="/dashboard" replace />;
+  const { token, user } = useAuthStore();
+  if (!token) return children;
+  return <Navigate to={user?.userType === 'customer' ? '/customer/dashboard' : '/dashboard'} replace />;
 };
 
 const AdminRoute = ({ children }) => {
@@ -52,26 +58,34 @@ function App() {
         }}
       />
       <Routes>
+        {/* Public */}
         <Route path="/" element={<Landing />} />
         <Route path="/plans" element={<Plans />} />
         <Route path="/stores" element={<StoreFinder />} />
         <Route path="/store/:slug" element={<Store />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
+        {/* Auth */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
         <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/dashboard/setup" element={<ProtectedRoute><BusinessSetup /></ProtectedRoute>} />
-        <Route path="/dashboard/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
-        <Route path="/dashboard/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-        <Route path="/dashboard/customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
-        <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-        <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        {/* Seller Dashboard */}
+        <Route path="/dashboard" element={<ProtectedRoute requiredType="seller"><Dashboard /></ProtectedRoute>} />
+        <Route path="/dashboard/setup" element={<ProtectedRoute requiredType="seller"><BusinessSetup /></ProtectedRoute>} />
+        <Route path="/dashboard/products" element={<ProtectedRoute requiredType="seller"><Products /></ProtectedRoute>} />
+        <Route path="/dashboard/orders" element={<ProtectedRoute requiredType="seller"><Orders /></ProtectedRoute>} />
+        <Route path="/dashboard/customers" element={<ProtectedRoute requiredType="seller"><Customers /></ProtectedRoute>} />
+        <Route path="/dashboard/analytics" element={<ProtectedRoute requiredType="seller"><Analytics /></ProtectedRoute>} />
+        <Route path="/dashboard/settings" element={<ProtectedRoute requiredType="seller"><Settings /></ProtectedRoute>} />
 
+        {/* Customer Dashboard */}
+        <Route path="/customer/dashboard" element={<ProtectedRoute requiredType="customer"><CustomerDashboard /></ProtectedRoute>} />
+
+        {/* Admin */}
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

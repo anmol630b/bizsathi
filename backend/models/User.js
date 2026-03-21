@@ -23,12 +23,16 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: [true, 'Phone number is required'],
-    match: [/^[6-9]\d{9}$/, 'Invalid Indian phone number']
+    required: [true, 'Phone number is required']
   },
   avatar: {
     type: String,
     default: null
+  },
+  userType: {
+    type: String,
+    enum: ['seller', 'customer'],
+    default: 'seller'
   },
   plan: {
     type: String,
@@ -62,22 +66,39 @@ const userSchema = new mongoose.Schema({
   loginCount: {
     type: Number,
     default: 0
-  }
+  },
+  // Customer specific
+  savedAddresses: [{
+    label: String,
+    street: String,
+    city: String,
+    state: String,
+    pincode: String,
+    isDefault: { type: Boolean, default: false }
+  }],
+  favouriteStores: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Business'
+  }],
+  orderHistory: [{
+    business: { type: mongoose.Schema.Types.ObjectId, ref: 'Business' },
+    businessName: String,
+    items: String,
+    total: Number,
+    orderedAt: { type: Date, default: Date.now }
+  }]
 }, { timestamps: true });
 
-// Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// Compare password
 userSchema.methods.comparePassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Check if plan is active
 userSchema.methods.isPlanActive = function() {
   if (this.plan === 'free') return true;
   return this.planExpiry && this.planExpiry > Date.now();
