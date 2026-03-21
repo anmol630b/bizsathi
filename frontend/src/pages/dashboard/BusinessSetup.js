@@ -69,42 +69,42 @@ const BusinessSetup = () => {
     }
   };
 
+  // Step 1 - name required only, phone collected in step 2
   const handleStep1 = async () => {
     if (!name.trim()) {
       toast.error('Business name is required!');
       return;
     }
-    setLoading(true);
-    try {
-      const data = { name, description, category, template };
-      if (business) {
-        await api.put('/business/update', data);
-      } else {
-        const res = await api.post('/business/create', data);
-        setBusiness(res.data.business);
-      }
-      toast.success('Saved!');
-      setStep(2);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Something went wrong!');
-    } finally {
-      setLoading(false);
-    }
+    // Just go to step 2 - save will happen in step 2 with all required fields
+    setStep(2);
   };
 
+  // Step 2 - save everything together with all required fields
   const handleStep2 = async () => {
     if (!phone.trim() || !whatsapp.trim()) {
       toast.error('Phone and WhatsApp number are required!');
       return;
     }
+    if (!name.trim()) {
+      toast.error('Business name is required!');
+      setStep(1);
+      return;
+    }
     setLoading(true);
     try {
-      await api.put('/business/update', {
+      const data = {
         name, description, category, template,
         phone, whatsapp, email,
         address: { street, city, state, pincode }
-      });
-      toast.success('Saved!');
+      };
+      if (business) {
+        await api.put('/business/update', data);
+        toast.success('Business updated!');
+      } else {
+        const res = await api.post('/business/create', data);
+        setBusiness(res.data.business);
+        toast.success('Business created!');
+      }
       setStep(3);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Something went wrong!');
@@ -156,6 +156,16 @@ const BusinessSetup = () => {
     fontWeight: '600', color: '#475569', marginBottom: '6px'
   };
 
+  const btnStyle = {
+    width: '100%', height: '46px',
+    background: 'linear-gradient(135deg, #00C896, #00A87E)',
+    color: 'white', border: 'none', borderRadius: '12px',
+    fontSize: '15px', fontWeight: '700', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    gap: '8px', fontFamily: 'Inter, sans-serif',
+    boxShadow: '0 4px 14px rgba(0,200,150,0.3)'
+  };
+
   return (
     <DashboardLayout>
       <div style={{ maxWidth: '720px', margin: '0 auto' }} className="fade-in">
@@ -170,8 +180,8 @@ const BusinessSetup = () => {
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '28px' }}>
           {[{ num: 1, label: 'Basic Info' }, { num: 2, label: 'Contact & Address' }, { num: 3, label: 'Design & Publish' }].map((s, i) => (
             <React.Fragment key={s.num}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => business && setStep(s.num)}>
-                <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: step >= s.num ? '#00C896' : '#F1F5F9', color: step >= s.num ? 'white' : '#94A3B8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '700', transition: 'all 0.3s', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: step >= s.num ? '#00C896' : '#F1F5F9', color: step >= s.num ? 'white' : '#94A3B8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '700', flexShrink: 0 }}>
                   {step > s.num ? <FiCheck size={14} /> : s.num}
                 </div>
                 <span style={{ fontSize: '13px', fontWeight: step === s.num ? '700' : '500', color: step === s.num ? '#00C896' : '#94A3B8', whiteSpace: 'nowrap' }}>{s.label}</span>
@@ -188,7 +198,6 @@ const BusinessSetup = () => {
             <div>
               <h3 style={{ fontSize: '17px', fontWeight: '700', marginBottom: '24px', color: '#0F172A', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Basic Information</h3>
 
-              {/* Logo */}
               <div style={{ marginBottom: '20px' }}>
                 <label style={labelStyle}>Business Logo</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -205,7 +214,6 @@ const BusinessSetup = () => {
                 </div>
               </div>
 
-              {/* Business Name */}
               <div style={{ marginBottom: '16px' }}>
                 <label style={labelStyle}>Business Name *</label>
                 <input
@@ -219,7 +227,6 @@ const BusinessSetup = () => {
                 />
               </div>
 
-              {/* Description */}
               <div style={{ marginBottom: '20px' }}>
                 <label style={labelStyle}>Description (Optional)</label>
                 <textarea
@@ -233,7 +240,6 @@ const BusinessSetup = () => {
                 />
               </div>
 
-              {/* Category */}
               <div style={{ marginBottom: '24px' }}>
                 <label style={labelStyle}>Business Category *</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
@@ -246,8 +252,8 @@ const BusinessSetup = () => {
                 </div>
               </div>
 
-              <button onClick={handleStep1} disabled={loading} style={{ width: '100%', height: '46px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Inter, sans-serif', boxShadow: '0 4px 14px rgba(0,200,150,0.3)' }}>
-                {loading ? <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> : 'Save & Continue →'}
+              <button onClick={handleStep1} style={btnStyle}>
+                Next: Contact Details →
               </button>
             </div>
           )}
@@ -295,7 +301,7 @@ const BusinessSetup = () => {
 
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button onClick={() => setStep(1)} style={{ flex: 1, height: '46px', background: 'white', border: '1.5px solid #E2E8F0', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', color: '#475569', fontFamily: 'Inter, sans-serif' }}>← Back</button>
-                <button onClick={handleStep2} disabled={loading} style={{ flex: 2, height: '46px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif', boxShadow: '0 4px 14px rgba(0,200,150,0.3)' }}>
+                <button onClick={handleStep2} disabled={loading} style={{ ...btnStyle, flex: 2, width: 'auto' }}>
                   {loading ? <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> : 'Save & Continue →'}
                 </button>
               </div>
@@ -335,7 +341,7 @@ const BusinessSetup = () => {
 
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button onClick={() => setStep(2)} style={{ flex: 1, height: '46px', background: 'white', border: '1.5px solid #E2E8F0', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', color: '#475569', fontFamily: 'Inter, sans-serif' }}>← Back</button>
-                <button onClick={handlePublish} disabled={publishing} style={{ flex: 2, height: '46px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: publishing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Inter, sans-serif', boxShadow: '0 4px 14px rgba(0,200,150,0.3)' }}>
+                <button onClick={handlePublish} disabled={publishing} style={{ ...btnStyle, flex: 2, width: 'auto' }}>
                   {publishing ? <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> : <><FiGlobe size={16} /> {business?.isPublished ? 'Update & Republish' : 'Publish Website'}</>}
                 </button>
               </div>
