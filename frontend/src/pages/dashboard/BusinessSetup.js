@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiGlobe, FiCheck } from 'react-icons/fi';
+import { FiGlobe, FiCheck, FiUpload, FiCamera } from 'react-icons/fi';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
@@ -10,6 +10,9 @@ const BusinessSetup = () => {
   const [loading, setLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [business, setBusiness] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const logoRef = useRef();
   const [formData, setFormData] = useState({
     name: '', description: '', category: 'shop', template: 'modern',
     phone: '', whatsapp: '', email: '',
@@ -25,6 +28,9 @@ const BusinessSetup = () => {
       const res = await api.get('/business/my');
       if (res.data.business) {
         setBusiness(res.data.business);
+        if (res.data.business.logo) {
+          setLogoPreview(`http://localhost:5000${res.data.business.logo}`);
+        }
         setFormData({
           name: res.data.business.name || '',
           description: res.data.business.description || '',
@@ -47,6 +53,27 @@ const BusinessSetup = () => {
       setFormData(prev => ({ ...prev, [parent]: { ...prev[parent], [child]: value } }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { toast.error('File size must be less than 5MB!'); return; }
+    setLogoPreview(URL.createObjectURL(file));
+    setLogoUploading(true);
+    try {
+      const formDataObj = new FormData();
+      formDataObj.append('logo', file);
+      const res = await api.post('/business/upload-logo', formDataObj, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success('Logo uploaded!');
+      setBusiness(res.data.business);
+    } catch (err) {
+      toast.error('Logo upload failed!');
+    } finally {
+      setLogoUploading(false);
     }
   };
 
@@ -78,7 +105,6 @@ const BusinessSetup = () => {
     try {
       await api.post('/business/publish');
       toast.success('Website is now LIVE!');
-      setBusiness({ ...business, isPublished: true });
       navigate('/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Could not publish!');
@@ -136,10 +162,33 @@ const BusinessSetup = () => {
         </div>
 
         <div className="card" style={{ padding: '32px' }}>
-          {/* Step 1 */}
+
+          {/* Step 1 - Basic Info */}
           {step === 1 && (
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Basic Information</h3>
+
+              {/* Logo Upload */}
+              <div className="form-group">
+                <label className="form-label">Business Logo</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ width: '80px', height: '80px', borderRadius: '16px', background: 'var(--gray-100)', border: '2px dashed var(--gray-300)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                    {logoPreview ? (
+                      <img src={logoPreview} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <FiCamera size={24} color="var(--gray-400)" />
+                    )}
+                  </div>
+                  <div>
+                    <input type="file" ref={logoRef} accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} />
+                    <button type="button" onClick={() => logoRef.current.click()} className="btn btn-outline btn-sm" style={{ gap: '6px', marginBottom: '6px' }} disabled={logoUploading}>
+                      {logoUploading ? <div className="loading-spinner" style={{ width: '14px', height: '14px', borderWidth: '2px' }} /> : <><FiUpload size={14} /> Upload Logo</>}
+                    </button>
+                    <p style={{ fontSize: '11px', color: 'var(--gray-400)' }}>PNG, JPG up to 5MB. Recommended: 200x200px</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="form-group">
                 <label className="form-label">Business Name *</label>
                 <input name="name" className="form-input" placeholder="e.g. Sharma General Store" value={formData.name} onChange={handleChange} />
@@ -165,7 +214,7 @@ const BusinessSetup = () => {
             </div>
           )}
 
-          {/* Step 2 */}
+          {/* Step 2 - Contact */}
           {step === 2 && (
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Contact & Address</h3>
@@ -180,12 +229,12 @@ const BusinessSetup = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Email (Optional)</label>
+                <label className="form-label">Business Email (Optional)</label>
                 <input name="email" type="email" className="form-input" placeholder="business@email.com" value={formData.email} onChange={handleChange} />
               </div>
               <div className="form-group">
                 <label className="form-label">Street Address</label>
-                <input name="address.street" className="form-input" placeholder="Street, Area" value={formData.address.street} onChange={handleChange} />
+                <input name="address.street" className="form-input" placeholder="Street, Area, Locality" value={formData.address.street} onChange={handleChange} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
                 <div className="form-group">
@@ -201,6 +250,14 @@ const BusinessSetup = () => {
                   <input name="address.pincode" className="form-input" placeholder="Pincode" value={formData.address.pincode} onChange={handleChange} maxLength={6} />
                 </div>
               </div>
+              <div className="form-group">
+                <label className="form-label">Social Links (Optional)</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <input name="socialLinks.instagram" className="form-input" placeholder="Instagram URL" value={formData.socialLinks.instagram} onChange={handleChange} />
+                  <input name="socialLinks.facebook" className="form-input" placeholder="Facebook URL" value={formData.socialLinks.facebook} onChange={handleChange} />
+                  <input name="socialLinks.youtube" className="form-input" placeholder="YouTube URL" value={formData.socialLinks.youtube} onChange={handleChange} />
+                </div>
+              </div>
               <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
                 <button onClick={() => setStep(1)} className="btn btn-outline" style={{ flex: 1, padding: '12px' }}>Back</button>
                 <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ flex: 2, padding: '12px' }}>
@@ -210,7 +267,7 @@ const BusinessSetup = () => {
             </div>
           )}
 
-          {/* Step 3 */}
+          {/* Step 3 - Design & Publish */}
           {step === 3 && (
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Choose Template & Publish</h3>
@@ -236,7 +293,7 @@ const BusinessSetup = () => {
                   <div style={{ fontSize: '15px', color: 'var(--gray-700)', wordBreak: 'break-all' }}>
                     {window.location.origin}/store/<strong>{business.slug}</strong>
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--gray-400)', marginTop: '6px' }}>This URL will be active after publishing</div>
+                  <div style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '6px' }}>This URL will be active after publishing</div>
                 </div>
               )}
 
