@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useAuthStore from '../store/authStore';
 import { FiArrowRight, FiCheck, FiZap, FiShoppingBag, FiUsers, FiBarChart2, FiSmartphone, FiStar, FiMenu, FiX } from 'react-icons/fi';
 
 const Landing = () => {
   const [navOpen, setNavOpen] = useState(false);
+  const { user, token, logout } = useAuthStore();
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -55,16 +58,25 @@ const Landing = () => {
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
             Pricing
           </Link>
-          <Link to="/login" style={{ fontSize: '14px', color: '#64748B', padding: '8px 16px', borderRadius: '8px', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.color = '#0F172A'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
-            Login
-          </Link>
-          <Link to="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', padding: '9px 20px', borderRadius: '10px', fontSize: '14px', fontWeight: '600', textDecoration: 'none', boxShadow: '0 4px 14px rgba(0,200,150,0.3)', marginLeft: '8px', transition: 'all 0.2s' }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,200,150,0.4)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,200,150,0.3)'; }}>
-            Get Started Free <FiArrowRight size={14} />
-          </Link>
+          {token ? (
+            <>
+              <Link to={user?.userType === 'seller' ? '/dashboard' : '/customer/dashboard'} style={{ fontSize: '14px', color: '#64748B', padding: '8px 16px', borderRadius: '8px', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s' }}>
+                Dashboard
+              </Link>
+              <button onClick={() => { logout(); navigate('/login'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'linear-gradient(135deg, #EF4444, #DC2626)', color: 'white', padding: '9px 20px', borderRadius: '10px', fontSize: '14px', fontWeight: '600', border: 'none', cursor: 'pointer', marginLeft: '8px' }}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" style={{ fontSize: '14px', color: '#64748B', padding: '8px 16px', borderRadius: '8px', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s' }}>
+                Login
+              </Link>
+              <Link to="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', padding: '9px 20px', borderRadius: '10px', fontSize: '14px', fontWeight: '600', textDecoration: 'none', boxShadow: '0 4px 14px rgba(0,200,150,0.3)', marginLeft: '8px', transition: 'all 0.2s' }}>
+                Get Started Free <FiArrowRight size={14} />
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}

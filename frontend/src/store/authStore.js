@@ -42,7 +42,7 @@ const useAuthStore = create(
       }
     }),
     {
-      name: 'bizsathi-auth',
+      name: 'bizsathi-auth-v2',
       partialize: (state) => ({ user: state.user, token: state.token })
     }
   )

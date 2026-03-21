@@ -25,11 +25,7 @@ const Register = () => {
     setLoading(false);
     if (result.success) {
       toast.success('Account created! Welcome to BizSathi!');
-      if (userType === 'seller') {
-        navigate('/dashboard/setup');
-      } else {
-        navigate('/customer/dashboard');
-      }
+      navigate('/');
     } else {
       toast.error(result.message);
     }

@@ -33,9 +33,9 @@ const ProtectedRoute = ({ children, requiredType }) => {
 };
 
 const PublicRoute = ({ children }) => {
-  const { token, user } = useAuthStore();
+  const { token } = useAuthStore();
   if (!token) return children;
-  return <Navigate to={user?.userType === 'customer' ? '/customer/dashboard' : '/dashboard'} replace />;
+  return <Navigate to="/" replace />;
 };
 
 const AdminRoute = ({ children }) => {

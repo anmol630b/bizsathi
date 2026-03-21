@@ -20,11 +20,7 @@ const Login = () => {
     setLoading(false);
     if (result.success) {
       toast.success('Welcome back!');
-      if (result.userType === 'customer') {
-        navigate('/customer/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      navigate('/');
     } else {
       toast.error(result.message);
     }
