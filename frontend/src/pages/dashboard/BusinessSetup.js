@@ -13,12 +13,17 @@ const BusinessSetup = () => {
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoUploading, setLogoUploading] = useState(false);
   const logoRef = useRef();
-  const [formData, setFormData] = useState({
-    name: '', description: '', category: 'shop', template: 'modern',
-    phone: '', whatsapp: '', email: '',
-    address: { street: '', city: '', state: '', pincode: '' },
-    socialLinks: { instagram: '', facebook: '', youtube: '' }
-  });
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('shop');
+  const [template, setTemplate] = useState('modern');
+  const [phone, setPhone] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [email, setEmail] = useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => { fetchBusiness(); }, []);
@@ -27,49 +32,36 @@ const BusinessSetup = () => {
     try {
       const res = await api.get('/business/my');
       if (res.data.business) {
-        setBusiness(res.data.business);
-        if (res.data.business.logo) {
-          setLogoPreview(`http://localhost:5000${res.data.business.logo}`);
-        }
-        setFormData({
-          name: res.data.business.name || '',
-          description: res.data.business.description || '',
-          category: res.data.business.category || 'shop',
-          template: res.data.business.template || 'modern',
-          phone: res.data.business.phone || '',
-          whatsapp: res.data.business.whatsapp || '',
-          email: res.data.business.email || '',
-          address: res.data.business.address || { street: '', city: '', state: '', pincode: '' },
-          socialLinks: res.data.business.socialLinks || { instagram: '', facebook: '', youtube: '' }
-        });
+        const b = res.data.business;
+        setBusiness(b);
+        setName(b.name || '');
+        setDescription(b.description || '');
+        setCategory(b.category || 'shop');
+        setTemplate(b.template || 'modern');
+        setPhone(b.phone || '');
+        setWhatsapp(b.whatsapp || '');
+        setEmail(b.email || '');
+        setStreet(b.address?.street || '');
+        setCity(b.address?.city || '');
+        setState(b.address?.state || '');
+        setPincode(b.address?.pincode || '');
+        if (b.logo) setLogoPreview(`http://localhost:5000${b.logo}`);
       }
     } catch (err) {}
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({ ...prev, [parent]: { ...prev[parent], [child]: value } }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
   };
 
   const handleLogoUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { toast.error('File size must be less than 5MB!'); return; }
     setLogoPreview(URL.createObjectURL(file));
     setLogoUploading(true);
     try {
       const formDataObj = new FormData();
       formDataObj.append('logo', file);
-      const res = await api.post('/business/upload-logo', formDataObj, {
+      await api.post('/business/upload-logo', formDataObj, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       toast.success('Logo uploaded!');
-      setBusiness(res.data.business);
     } catch (err) {
       toast.error('Logo upload failed!');
     } finally {
@@ -77,22 +69,43 @@ const BusinessSetup = () => {
     }
   };
 
-  const handleSave = async () => {
-    if (!formData.name || !formData.phone || !formData.whatsapp) {
-      toast.error('Business name, phone and WhatsApp number are required!');
+  const handleStep1 = async () => {
+    if (!name.trim()) {
+      toast.error('Business name is required!');
       return;
     }
     setLoading(true);
     try {
+      const data = { name, description, category, template };
       if (business) {
-        await api.put('/business/update', formData);
-        toast.success('Business updated!');
+        await api.put('/business/update', data);
       } else {
-        const res = await api.post('/business/create', formData);
+        const res = await api.post('/business/create', data);
         setBusiness(res.data.business);
-        toast.success('Business created!');
       }
-      if (step < 3) setStep(step + 1);
+      toast.success('Saved!');
+      setStep(2);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Something went wrong!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStep2 = async () => {
+    if (!phone.trim() || !whatsapp.trim()) {
+      toast.error('Phone and WhatsApp number are required!');
+      return;
+    }
+    setLoading(true);
+    try {
+      await api.put('/business/update', {
+        name, description, category, template,
+        phone, whatsapp, email,
+        address: { street, city, state, pincode }
+      });
+      toast.success('Saved!');
+      setStep(3);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Something went wrong!');
     } finally {
@@ -113,17 +126,11 @@ const BusinessSetup = () => {
     }
   };
 
-  const steps = [
-    { num: 1, label: 'Basic Info' },
-    { num: 2, label: 'Contact & Address' },
-    { num: 3, label: 'Design & Publish' }
-  ];
-
   const templates = [
-    { id: 'modern', name: 'Modern', desc: 'Clean & professional', color: '#1D9E75', emoji: '✨' },
-    { id: 'classic', name: 'Classic', desc: 'Traditional look', color: '#534AB7', emoji: '🏛️' },
-    { id: 'bold', name: 'Bold', desc: 'Strong & impactful', color: '#D85A30', emoji: '🔥' },
-    { id: 'minimal', name: 'Minimal', desc: 'Simple & clean', color: '#888', emoji: '⚪' }
+    { id: 'modern', name: 'Modern', desc: 'Clean & professional', color: '#00C896', emoji: '✨' },
+    { id: 'classic', name: 'Classic', desc: 'Traditional look', color: '#6366F1', emoji: '🏛️' },
+    { id: 'bold', name: 'Bold', desc: 'Strong & impactful', color: '#EF4444', emoji: '🔥' },
+    { id: 'minimal', name: 'Minimal', desc: 'Simple & clean', color: '#64748B', emoji: '⚪' }
   ];
 
   const categories = [
@@ -136,171 +143,200 @@ const BusinessSetup = () => {
     { id: 'other', label: 'Other', emoji: '🏢' }
   ];
 
+  const inputStyle = {
+    width: '100%', padding: '11px 14px',
+    border: '1.5px solid #E2E8F0', borderRadius: '10px',
+    fontSize: '14px', color: '#0F172A', background: 'white',
+    outline: 'none', transition: 'border-color 0.2s',
+    fontFamily: 'Inter, sans-serif', boxSizing: 'border-box'
+  };
+
+  const labelStyle = {
+    display: 'block', fontSize: '13px',
+    fontWeight: '600', color: '#475569', marginBottom: '6px'
+  };
+
   return (
     <DashboardLayout>
-      <div className="fade-in" style={{ maxWidth: '760px', margin: '0 auto' }}>
-        <div style={{ marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: '700', fontFamily: 'Poppins, sans-serif', color: 'var(--gray-900)', marginBottom: '8px' }}>
+      <div style={{ maxWidth: '720px', margin: '0 auto' }} className="fade-in">
+        <div style={{ marginBottom: '28px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '800', fontFamily: 'Plus Jakarta Sans, sans-serif', color: '#0F172A', marginBottom: '6px', letterSpacing: '-0.02em' }}>
             {business ? 'Update Business' : 'Setup Your Business'}
           </h2>
-          <p style={{ color: 'var(--gray-500)', fontSize: '14px' }}>Fill in your business details and publish your website</p>
+          <p style={{ color: '#94A3B8', fontSize: '14px' }}>Fill in your business details and publish your website</p>
         </div>
 
         {/* Steps */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '32px' }}>
-          {steps.map((s, i) => (
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '28px' }}>
+          {[{ num: 1, label: 'Basic Info' }, { num: 2, label: 'Contact & Address' }, { num: 3, label: 'Design & Publish' }].map((s, i) => (
             <React.Fragment key={s.num}>
-              <div onClick={() => business && setStep(s.num)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: business ? 'pointer' : 'default' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step >= s.num ? 'var(--primary)' : 'var(--gray-200)', color: step >= s.num ? 'white' : 'var(--gray-400)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600', transition: 'all 0.3s' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => business && setStep(s.num)}>
+                <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: step >= s.num ? '#00C896' : '#F1F5F9', color: step >= s.num ? 'white' : '#94A3B8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '700', transition: 'all 0.3s', flexShrink: 0 }}>
                   {step > s.num ? <FiCheck size={14} /> : s.num}
                 </div>
-                <span style={{ fontSize: '13px', fontWeight: step === s.num ? '600' : '400', color: step === s.num ? 'var(--primary)' : 'var(--gray-400)' }}>{s.label}</span>
+                <span style={{ fontSize: '13px', fontWeight: step === s.num ? '700' : '500', color: step === s.num ? '#00C896' : '#94A3B8', whiteSpace: 'nowrap' }}>{s.label}</span>
               </div>
-              {i < steps.length - 1 && <div style={{ flex: 1, height: '2px', background: step > s.num ? 'var(--primary)' : 'var(--gray-200)', margin: '0 12px', transition: 'background 0.3s' }} />}
+              {i < 2 && <div style={{ flex: 1, height: '2px', background: step > s.num ? '#00C896' : '#F1F5F9', margin: '0 10px', transition: 'background 0.3s' }} />}
             </React.Fragment>
           ))}
         </div>
 
-        <div className="card" style={{ padding: '32px' }}>
+        <div style={{ background: 'white', borderRadius: '20px', padding: '32px', border: '1px solid #F1F5F9', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
 
-          {/* Step 1 - Basic Info */}
+          {/* Step 1 */}
           {step === 1 && (
             <div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Basic Information</h3>
+              <h3 style={{ fontSize: '17px', fontWeight: '700', marginBottom: '24px', color: '#0F172A', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Basic Information</h3>
 
-              {/* Logo Upload */}
-              <div className="form-group">
-                <label className="form-label">Business Logo</label>
+              {/* Logo */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={labelStyle}>Business Logo</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{ width: '80px', height: '80px', borderRadius: '16px', background: 'var(--gray-100)', border: '2px dashed var(--gray-300)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-                    {logoPreview ? (
-                      <img src={logoPreview} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                      <FiCamera size={24} color="var(--gray-400)" />
-                    )}
+                  <div style={{ width: '72px', height: '72px', borderRadius: '14px', background: '#F8FAFC', border: '2px dashed #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                    {logoPreview ? <img src={logoPreview} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <FiCamera size={22} color="#CBD5E1" />}
                   </div>
                   <div>
                     <input type="file" ref={logoRef} accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} />
-                    <button type="button" onClick={() => logoRef.current.click()} className="btn btn-outline btn-sm" style={{ gap: '6px', marginBottom: '6px' }} disabled={logoUploading}>
-                      {logoUploading ? <div className="loading-spinner" style={{ width: '14px', height: '14px', borderWidth: '2px' }} /> : <><FiUpload size={14} /> Upload Logo</>}
+                    <button type="button" onClick={() => logoRef.current.click()} disabled={logoUploading} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: '1.5px solid #E2E8F0', background: 'white', fontSize: '13px', fontWeight: '600', color: '#475569', cursor: 'pointer' }}>
+                      {logoUploading ? '...' : <><FiUpload size={13} /> Upload Logo</>}
                     </button>
-                    <p style={{ fontSize: '11px', color: 'var(--gray-400)' }}>PNG, JPG up to 5MB. Recommended: 200x200px</p>
+                    <p style={{ fontSize: '11px', color: '#94A3B8', marginTop: '4px' }}>PNG, JPG up to 5MB</p>
                   </div>
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Business Name *</label>
-                <input name="name" className="form-input" placeholder="e.g. Sharma General Store" value={formData.name} onChange={handleChange} />
+              {/* Business Name */}
+              <div style={{ marginBottom: '16px' }}>
+                <label style={labelStyle}>Business Name *</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="e.g. Ram General Store"
+                  style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = '#00C896'}
+                  onBlur={e => e.target.style.borderColor = '#E2E8F0'}
+                />
               </div>
-              <div className="form-group">
-                <label className="form-label">Description</label>
-                <textarea name="description" className="form-textarea" placeholder="Tell customers about your business..." value={formData.description} onChange={handleChange} rows={3} />
+
+              {/* Description */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={labelStyle}>Description (Optional)</label>
+                <textarea
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  placeholder="Tell customers about your business..."
+                  rows={3}
+                  style={{ ...inputStyle, resize: 'vertical', minHeight: '90px' }}
+                  onFocus={e => e.target.style.borderColor = '#00C896'}
+                  onBlur={e => e.target.style.borderColor = '#E2E8F0'}
+                />
               </div>
-              <div className="form-group">
-                <label className="form-label">Business Category *</label>
+
+              {/* Category */}
+              <div style={{ marginBottom: '24px' }}>
+                <label style={labelStyle}>Business Category *</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
                   {categories.map(cat => (
-                    <div key={cat.id} onClick={() => setFormData(prev => ({ ...prev, category: cat.id }))} style={{ padding: '12px 8px', borderRadius: '10px', textAlign: 'center', cursor: 'pointer', border: `2px solid ${formData.category === cat.id ? 'var(--primary)' : 'var(--gray-200)'}`, background: formData.category === cat.id ? 'var(--primary-light)' : 'white', transition: 'all 0.2s' }}>
+                    <div key={cat.id} onClick={() => setCategory(cat.id)} style={{ padding: '12px 8px', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', border: `2px solid ${category === cat.id ? '#00C896' : '#F1F5F9'}`, background: category === cat.id ? 'rgba(0,200,150,0.06)' : 'white', transition: 'all 0.2s' }}>
                       <div style={{ fontSize: '22px', marginBottom: '4px' }}>{cat.emoji}</div>
-                      <div style={{ fontSize: '11px', fontWeight: '500', color: formData.category === cat.id ? 'var(--primary)' : 'var(--gray-600)' }}>{cat.label}</div>
+                      <div style={{ fontSize: '11px', fontWeight: '600', color: category === cat.id ? '#00A87E' : '#64748B' }}>{cat.label}</div>
                     </div>
                   ))}
                 </div>
               </div>
-              <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ width: '100%', padding: '12px' }}>
-                {loading ? <div className="loading-spinner" style={{ width: '18px', height: '18px', borderWidth: '2px' }} /> : 'Save & Continue'}
+
+              <button onClick={handleStep1} disabled={loading} style={{ width: '100%', height: '46px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Inter, sans-serif', boxShadow: '0 4px 14px rgba(0,200,150,0.3)' }}>
+                {loading ? <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> : 'Save & Continue →'}
               </button>
             </div>
           )}
 
-          {/* Step 2 - Contact */}
+          {/* Step 2 */}
           {step === 2 && (
             <div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Contact & Address</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group">
-                  <label className="form-label">Phone Number *</label>
-                  <input name="phone" className="form-input" placeholder="10 digit number" value={formData.phone} onChange={handleChange} maxLength={10} />
+              <h3 style={{ fontSize: '17px', fontWeight: '700', marginBottom: '24px', color: '#0F172A', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Contact & Address</h3>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+                <div>
+                  <label style={labelStyle}>Phone Number *</label>
+                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="10 digit number" maxLength={10} style={inputStyle} onFocus={e => e.target.style.borderColor = '#00C896'} onBlur={e => e.target.style.borderColor = '#E2E8F0'} />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">WhatsApp Number *</label>
-                  <input name="whatsapp" className="form-input" placeholder="WhatsApp number" value={formData.whatsapp} onChange={handleChange} maxLength={10} />
-                </div>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Business Email (Optional)</label>
-                <input name="email" type="email" className="form-input" placeholder="business@email.com" value={formData.email} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Street Address</label>
-                <input name="address.street" className="form-input" placeholder="Street, Area, Locality" value={formData.address.street} onChange={handleChange} />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                <div className="form-group">
-                  <label className="form-label">City</label>
-                  <input name="address.city" className="form-input" placeholder="City" value={formData.address.city} onChange={handleChange} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">State</label>
-                  <input name="address.state" className="form-input" placeholder="State" value={formData.address.state} onChange={handleChange} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Pincode</label>
-                  <input name="address.pincode" className="form-input" placeholder="Pincode" value={formData.address.pincode} onChange={handleChange} maxLength={6} />
+                <div>
+                  <label style={labelStyle}>WhatsApp Number *</label>
+                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="WhatsApp number" maxLength={10} style={inputStyle} onFocus={e => e.target.style.borderColor = '#00C896'} onBlur={e => e.target.style.borderColor = '#E2E8F0'} />
                 </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">Social Links (Optional)</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <input name="socialLinks.instagram" className="form-input" placeholder="Instagram URL" value={formData.socialLinks.instagram} onChange={handleChange} />
-                  <input name="socialLinks.facebook" className="form-input" placeholder="Facebook URL" value={formData.socialLinks.facebook} onChange={handleChange} />
-                  <input name="socialLinks.youtube" className="form-input" placeholder="YouTube URL" value={formData.socialLinks.youtube} onChange={handleChange} />
+
+              <div style={{ marginBottom: '14px' }}>
+                <label style={labelStyle}>Email (Optional)</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="business@email.com" style={inputStyle} onFocus={e => e.target.style.borderColor = '#00C896'} onBlur={e => e.target.style.borderColor = '#E2E8F0'} />
+              </div>
+
+              <div style={{ marginBottom: '14px' }}>
+                <label style={labelStyle}>Street Address</label>
+                <input type="text" value={street} onChange={e => setStreet(e.target.value)} placeholder="Street, Area, Locality" style={inputStyle} onFocus={e => e.target.style.borderColor = '#00C896'} onBlur={e => e.target.style.borderColor = '#E2E8F0'} />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '24px' }}>
+                <div>
+                  <label style={labelStyle}>City</label>
+                  <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" style={inputStyle} onFocus={e => e.target.style.borderColor = '#00C896'} onBlur={e => e.target.style.borderColor = '#E2E8F0'} />
+                </div>
+                <div>
+                  <label style={labelStyle}>State</label>
+                  <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="State" style={inputStyle} onFocus={e => e.target.style.borderColor = '#00C896'} onBlur={e => e.target.style.borderColor = '#E2E8F0'} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Pincode</label>
+                  <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} placeholder="Pincode" maxLength={6} style={inputStyle} onFocus={e => e.target.style.borderColor = '#00C896'} onBlur={e => e.target.style.borderColor = '#E2E8F0'} />
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-                <button onClick={() => setStep(1)} className="btn btn-outline" style={{ flex: 1, padding: '12px' }}>Back</button>
-                <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ flex: 2, padding: '12px' }}>
-                  {loading ? <div className="loading-spinner" style={{ width: '18px', height: '18px', borderWidth: '2px' }} /> : 'Save & Continue'}
+
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button onClick={() => setStep(1)} style={{ flex: 1, height: '46px', background: 'white', border: '1.5px solid #E2E8F0', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', color: '#475569', fontFamily: 'Inter, sans-serif' }}>← Back</button>
+                <button onClick={handleStep2} disabled={loading} style={{ flex: 2, height: '46px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif', boxShadow: '0 4px 14px rgba(0,200,150,0.3)' }}>
+                  {loading ? <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> : 'Save & Continue →'}
                 </button>
               </div>
             </div>
           )}
 
-          {/* Step 3 - Design & Publish */}
+          {/* Step 3 */}
           {step === 3 && (
             <div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '24px', color: 'var(--gray-800)' }}>Choose Template & Publish</h3>
-              <div className="form-group">
-                <label className="form-label">Website Template</label>
+              <h3 style={{ fontSize: '17px', fontWeight: '700', marginBottom: '24px', color: '#0F172A', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Choose Template & Publish</h3>
+
+              <div style={{ marginBottom: '24px' }}>
+                <label style={labelStyle}>Website Template</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
                   {templates.map(tmpl => (
-                    <div key={tmpl.id} onClick={() => setFormData(prev => ({ ...prev, template: tmpl.id }))} style={{ padding: '16px 12px', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', border: `2px solid ${formData.template === tmpl.id ? tmpl.color : 'var(--gray-200)'}`, background: formData.template === tmpl.id ? tmpl.color + '15' : 'white', transition: 'all 0.2s' }}>
+                    <div key={tmpl.id} onClick={() => setTemplate(tmpl.id)} style={{ padding: '16px 12px', borderRadius: '14px', textAlign: 'center', cursor: 'pointer', border: `2px solid ${template === tmpl.id ? tmpl.color : '#F1F5F9'}`, background: template === tmpl.id ? `${tmpl.color}10` : 'white', transition: 'all 0.2s' }}>
                       <div style={{ fontSize: '28px', marginBottom: '6px' }}>{tmpl.emoji}</div>
-                      <div style={{ fontSize: '13px', fontWeight: '600', color: formData.template === tmpl.id ? tmpl.color : 'var(--gray-700)' }}>{tmpl.name}</div>
-                      <div style={{ fontSize: '11px', color: 'var(--gray-400)', marginTop: '2px' }}>{tmpl.desc}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '700', color: template === tmpl.id ? tmpl.color : '#475569' }}>{tmpl.name}</div>
+                      <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>{tmpl.desc}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {business && (
-                <div style={{ background: 'var(--primary-light)', borderRadius: '12px', padding: '20px', marginTop: '16px', marginBottom: '24px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                    <FiGlobe color="var(--primary)" size={18} />
-                    <span style={{ fontWeight: '600', color: 'var(--primary)', fontSize: '14px' }}>Your Store URL</span>
+                <div style={{ background: 'rgba(0,200,150,0.06)', borderRadius: '12px', padding: '16px 20px', marginBottom: '24px', border: '1px solid rgba(0,200,150,0.15)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    <FiGlobe color="#00C896" size={16} />
+                    <span style={{ fontWeight: '700', color: '#00A87E', fontSize: '13px' }}>Your Store URL</span>
                   </div>
-                  <div style={{ fontSize: '15px', color: 'var(--gray-700)', wordBreak: 'break-all' }}>
+                  <div style={{ fontSize: '14px', color: '#334155', wordBreak: 'break-all' }}>
                     {window.location.origin}/store/<strong>{business.slug}</strong>
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '6px' }}>This URL will be active after publishing</div>
+                  <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '4px' }}>This URL will be active after publishing</div>
                 </div>
               )}
 
               <div style={{ display: 'flex', gap: '12px' }}>
-                <button onClick={() => setStep(2)} className="btn btn-outline" style={{ flex: 1, padding: '12px' }}>Back</button>
-                <button onClick={handlePublish} disabled={publishing} className="btn btn-primary" style={{ flex: 2, padding: '12px', gap: '8px' }}>
-                  {publishing ? <div className="loading-spinner" style={{ width: '18px', height: '18px', borderWidth: '2px' }} /> : <><FiGlobe size={16} /> {business?.isPublished ? 'Update & Republish' : 'Publish Website'}</>}
+                <button onClick={() => setStep(2)} style={{ flex: 1, height: '46px', background: 'white', border: '1.5px solid #E2E8F0', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', color: '#475569', fontFamily: 'Inter, sans-serif' }}>← Back</button>
+                <button onClick={handlePublish} disabled={publishing} style={{ flex: 2, height: '46px', background: 'linear-gradient(135deg, #00C896, #00A87E)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: publishing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Inter, sans-serif', boxShadow: '0 4px 14px rgba(0,200,150,0.3)' }}>
+                  {publishing ? <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> : <><FiGlobe size={16} /> {business?.isPublished ? 'Update & Republish' : 'Publish Website'}</>}
                 </button>
               </div>
             </div>
