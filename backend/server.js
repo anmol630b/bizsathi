@@ -8,14 +8,12 @@ require('dotenv').config();
 
 const app = express();
 
-// Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
   credentials: true
 }));
 
-// Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -23,14 +21,10 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/business', require('./routes/business'));
 app.use('/api/products', require('./routes/products'));
@@ -40,12 +34,10 @@ app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/plans', require('./routes/plans'));
 app.use('/api/admin', require('./routes/admin'));
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'BizSathi API Running!', version: '1.0.0' });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
@@ -54,7 +46,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Database connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('MongoDB Connected!');
