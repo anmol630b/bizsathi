@@ -18,6 +18,7 @@ import Analytics from './pages/dashboard/Analytics';
 import Settings from './pages/dashboard/Settings';
 import Plans from './pages/Plans';
 import Store from './pages/store/Store';
+import StoreFinder from './pages/StoreFinder';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import NotFound from './pages/NotFound';
 
@@ -45,14 +46,15 @@ function App() {
         position="top-right"
         toastOptions={{
           duration: 3000,
-          style: { borderRadius: '10px', background: '#1F2937', color: '#fff', fontSize: '14px', padding: '12px 16px' },
-          success: { iconTheme: { primary: '#1D9E75', secondary: '#fff' } },
-          error: { iconTheme: { primary: '#E24B4A', secondary: '#fff' } }
+          style: { borderRadius: '12px', background: '#0F172A', color: '#fff', fontSize: '14px', padding: '12px 16px' },
+          success: { iconTheme: { primary: '#00C896', secondary: '#fff' } },
+          error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } }
         }}
       />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/plans" element={<Plans />} />
+        <Route path="/stores" element={<StoreFinder />} />
         <Route path="/store/:slug" element={<Store />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
 
@@ -70,7 +72,6 @@ function App() {
         <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -32,26 +32,11 @@ const businessSchema = new mongoose.Schema({
     enum: ['modern', 'classic', 'bold', 'minimal'],
     default: 'modern'
   },
-  logo: {
-    type: String,
-    default: null
-  },
-  coverImage: {
-    type: String,
-    default: null
-  },
-  phone: {
-    type: String,
-    required: [true, 'Phone number is required']
-  },
-  whatsapp: {
-    type: String,
-    required: [true, 'WhatsApp number is required']
-  },
-  email: {
-    type: String,
-    default: null
-  },
+  logo: { type: String, default: null },
+  coverImage: { type: String, default: null },
+  phone: { type: String, required: [true, 'Phone number is required'] },
+  whatsapp: { type: String, required: [true, 'WhatsApp number is required'] },
+  email: { type: String, default: null },
   address: {
     street: String,
     city: String,
@@ -59,60 +44,39 @@ const businessSchema = new mongoose.Schema({
     pincode: String,
     country: { type: String, default: 'India' }
   },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number],
+      default: [0, 0]
+    }
+  },
   socialLinks: {
     instagram: { type: String, default: null },
     facebook: { type: String, default: null },
     youtube: { type: String, default: null }
-  },
-  businessHours: {
-    monday: { open: String, close: String, isOpen: { type: Boolean, default: true } },
-    tuesday: { open: String, close: String, isOpen: { type: Boolean, default: true } },
-    wednesday: { open: String, close: String, isOpen: { type: Boolean, default: true } },
-    thursday: { open: String, close: String, isOpen: { type: Boolean, default: true } },
-    friday: { open: String, close: String, isOpen: { type: Boolean, default: true } },
-    saturday: { open: String, close: String, isOpen: { type: Boolean, default: true } },
-    sunday: { open: String, close: String, isOpen: { type: Boolean, default: false } }
   },
   seo: {
     title: String,
     description: String,
     keywords: String
   },
-  isPublished: {
-    type: Boolean,
-    default: false
-  },
-  publishedAt: {
-    type: Date,
-    default: null
-  },
-  customDomain: {
-    type: String,
-    default: null
-  },
-  totalOrders: {
-    type: Number,
-    default: 0
-  },
-  totalRevenue: {
-    type: Number,
-    default: 0
-  },
-  totalCustomers: {
-    type: Number,
-    default: 0
-  },
-  rating: {
-    type: Number,
-    default: 0
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  }
+  isPublished: { type: Boolean, default: false },
+  publishedAt: { type: Date, default: null },
+  customDomain: { type: String, default: null },
+  totalOrders: { type: Number, default: 0 },
+  totalRevenue: { type: Number, default: 0 },
+  totalCustomers: { type: Number, default: 0 },
+  rating: { type: Number, default: 0 },
+  isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
-// Auto generate slug
+businessSchema.index({ location: '2dsphere' });
+
 businessSchema.pre('save', async function(next) {
   if (!this.isModified('name')) return next();
   let baseSlug = slug(this.name, { lower: true });

@@ -49,6 +49,7 @@ const Landing = () => {
 
         {/* Desktop Nav Links */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Link to="/stores" style={{ fontSize: '14px', color: '#64748B', padding: '8px 16px', borderRadius: '8px', fontWeight: '500', textDecoration: 'none' }}>Find Stores</Link>
           <Link to="/plans" style={{ fontSize: '14px', color: '#64748B', padding: '8px 16px', borderRadius: '8px', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.color = '#0F172A'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
@@ -75,6 +76,7 @@ const Landing = () => {
       {/* Mobile Menu */}
       {navOpen && (
         <div style={{ position: 'fixed', top: '68px', left: 0, right: 0, background: 'white', borderBottom: '1px solid #F1F5F9', padding: '16px 24px', zIndex: 99, boxShadow: '0 8px 24px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Link to="/stores" style={{ fontSize: '14px', color: '#64748B', padding: '8px 16px', borderRadius: '8px', fontWeight: '500', textDecoration: 'none' }}>Find Stores</Link>
           <Link to="/plans" onClick={() => setNavOpen(false)} style={{ padding: '12px 16px', borderRadius: '10px', color: '#475569', fontWeight: '500', fontSize: '15px', textDecoration: 'none', background: '#F8FAFC' }}>Pricing</Link>
           <Link to="/login" onClick={() => setNavOpen(false)} style={{ padding: '12px 16px', borderRadius: '10px', color: '#475569', fontWeight: '500', fontSize: '15px', textDecoration: 'none', background: '#F8FAFC' }}>Login</Link>
           <Link to="/register" onClick={() => setNavOpen(false)} style={{ padding: '12px 16px', borderRadius: '10px', color: 'white', fontWeight: '600', fontSize: '15px', textDecoration: 'none', background: 'linear-gradient(135deg, #00C896, #00A87E)', textAlign: 'center' }}>Get Started Free</Link>
@@ -121,7 +123,8 @@ const Landing = () => {
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,200,150,0.35)'; }}>
               Start For Free <FiArrowRight size={18} />
             </Link>
-            <Link to="/plans" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'white', color: '#334155', padding: '15px 32px', borderRadius: '12px', fontSize: '16px', fontWeight: '600', border: '1.5px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', transition: 'all 0.2s', textDecoration: 'none' }}
+            <Link to="/stores" style={{ fontSize: '14px', color: '#64748B', padding: '8px 16px', borderRadius: '8px', fontWeight: '500', textDecoration: 'none' }}>Find Stores</Link>
+          <Link to="/plans" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'white', color: '#334155', padding: '15px 32px', borderRadius: '12px', fontSize: '16px', fontWeight: '600', border: '1.5px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', transition: 'all 0.2s', textDecoration: 'none' }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.08)'; e.currentTarget.style.borderColor = '#CBD5E1'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)'; e.currentTarget.style.borderColor = '#E2E8F0'; }}>
               View Pricing

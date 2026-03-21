@@ -174,3 +174,18 @@ router.put('/custom-domain', protect, planCheck('pro'), async (req, res) => {
 });
 
 module.exports = router;
+
+// @route POST /api/business/update-location
+router.post('/update-location', protect, async (req, res) => {
+  try {
+    const { lat, lng } = req.body;
+    const business = await Business.findOneAndUpdate(
+      { owner: req.user._id },
+      { location: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] } },
+      { new: true }
+    );
+    res.json({ success: true, message: 'Location updated!', business });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
