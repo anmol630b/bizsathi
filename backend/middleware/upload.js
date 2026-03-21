@@ -32,7 +32,7 @@ const fileFilter = (req, file, cb) => {
   if (extname && mimetype) {
     cb(null, true);
   } else {
-    cb(new Error('Sirf images allowed hain (jpeg, jpg, png, webp, gif)'));
+    cb(new Error('Only images allowed (jpeg, jpg, png, webp, gif)'));
   }
 };
 
@@ -52,7 +52,7 @@ exports.handleUploadError = (err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         success: false,
-        message: 'File size 5MB se zyada nahi ho sakti'
+        message: 'File size cannot exceed 5MB'
       });
     }
   }
