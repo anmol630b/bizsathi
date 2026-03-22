@@ -102,7 +102,7 @@ const Landing = () => {
           )}
         </div>
 
-        <button onClick={() => setNavOpen(!navOpen)} style={{ background: 'none', border: '1.5px solid #E2E8F0', color: '#0F172A', padding: '8px', borderRadius: '10px', cursor: 'pointer', display: 'none' }} className="show-mobile">
+        <button onClick={() => setNavOpen(!navOpen)} style={{ background: 'none', border: '1.5px solid #E2E8F0', color: '#0F172A', padding: '8px', borderRadius: '10px', cursor: 'pointer' }} className="show-mobile">
           {navOpen ? <FiX size={20} /> : <FiMenu size={20} />}
         </button>
       </nav>

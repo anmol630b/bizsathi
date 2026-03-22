@@ -5,6 +5,8 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const BusinessSetup = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -25,7 +27,6 @@ const BusinessSetup = () => {
   const [state, setState] = useState('');
   const [pincode, setPincode] = useState('');
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || API_URL;
 
   useEffect(() => { fetchBusiness(); }, []);
 

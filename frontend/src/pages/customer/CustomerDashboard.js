@@ -10,6 +10,8 @@ import useAuthStore from '../../store/authStore';
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const CustomerDashboard = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -25,7 +27,6 @@ const CustomerDashboard = () => {
   const avatarRef = useRef();
   const { logout, updateUser } = useAuthStore();
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || API_URL;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 900);

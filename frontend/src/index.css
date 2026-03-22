@@ -345,3 +345,20 @@ input, textarea, select { font-family: 'Inter', sans-serif; }
 
 /* DIVIDER */
 .divider { height: 1px; background: var(--gray-100); margin: 20px 0; }
+
+@media (max-width: 900px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: flex !important; }
+}
+@media (min-width: 901px) {
+  .show-mobile { display: none !important; }
+}
+
+/* Navbar responsive */
+@media (max-width: 900px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: flex !important; }
+}
+@media (min-width: 901px) {
+  .show-mobile { display: none !important; }
+}

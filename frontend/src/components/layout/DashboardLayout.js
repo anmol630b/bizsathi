@@ -10,6 +10,8 @@ import useAuthStore from '../../store/authStore';
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const navItems = [
   { path: '/dashboard', icon: FiHome, label: 'Dashboard', desc: 'Overview & stats' },
   { path: '/dashboard/products', icon: FiShoppingBag, label: 'Products', desc: 'Manage your products' },
@@ -32,7 +34,6 @@ const DashboardLayout = ({ children }) => {
   const searchRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || API_URL;
   const { user, logout } = useAuthStore();
 
   useEffect(() => {

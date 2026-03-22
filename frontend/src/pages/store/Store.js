@@ -4,6 +4,8 @@ import { FiPhone, FiMapPin, FiMessageCircle, FiSearch, FiShoppingCart, FiPlus, F
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const Store = () => {
   const { slug } = useParams();
   const [business, setBusiness] = useState(null);

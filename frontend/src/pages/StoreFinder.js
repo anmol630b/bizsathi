@@ -4,6 +4,8 @@ import { FiSearch, FiMapPin, FiNavigation, FiShoppingBag, FiX } from 'react-icon
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const categories = [
   { id: 'all', label: 'All', emoji: '🏪' },
   { id: 'shop', label: 'Shop', emoji: '🛒' },
@@ -31,7 +33,6 @@ const StoreFinder = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [searched, setSearched] = useState(false);
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || API_URL;
 
   useEffect(() => {
     fetchCities();
