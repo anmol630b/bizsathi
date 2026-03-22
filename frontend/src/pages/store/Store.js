@@ -99,7 +99,7 @@ const Store = () => {
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 50% 50%, rgba(0,200,150,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           {business.logo ? (
-            <img src={`http://localhost:5000${business.logo}`} alt="logo" style={{ width: '88px', height: '88px', borderRadius: '22px', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.1)', marginBottom: '16px', boxShadow: '0 12px 32px rgba(0,0,0,0.3)' }} />
+            <img src={`${API_URL}${business.logo}`} alt="logo" style={{ width: '88px', height: '88px', borderRadius: '22px', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.1)', marginBottom: '16px', boxShadow: '0 12px 32px rgba(0,0,0,0.3)' }} />
           ) : (
             <div style={{ width: '88px', height: '88px', borderRadius: '22px', background: 'linear-gradient(135deg, #00C896, #6366F1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: '36px', fontWeight: '800', color: 'white', boxShadow: '0 12px 32px rgba(0,200,150,0.3)' }}>
               {business.name.charAt(0)}
@@ -170,7 +170,7 @@ const Store = () => {
                   {/* Product Image */}
                   <div onClick={() => setSelectedProduct(product)} style={{ height: '200px', background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
                     {product.images?.[0] ? (
-                      <img src={`http://localhost:5000${product.images[0]}`} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
+                      <img src={`${API_URL}${product.images[0]}`} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
                         onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
                         onMouseLeave={e => e.target.style.transform = 'scale(1)'} />
                     ) : <span style={{ fontSize: '52px', opacity: 0.2 }}>📦</span>}
@@ -236,7 +236,7 @@ const Store = () => {
           onClick={() => setSelectedProduct(null)}>
           <div style={{ background: 'white', borderRadius: '24px', width: '100%', maxWidth: '480px', overflow: 'hidden', boxShadow: '0 32px 64px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
             {selectedProduct.images?.[0] ? (
-              <img src={`http://localhost:5000${selectedProduct.images[0]}`} alt={selectedProduct.name} style={{ width: '100%', height: '260px', objectFit: 'cover' }} />
+              <img src={`${API_URL}${selectedProduct.images[0]}`} alt={selectedProduct.name} style={{ width: '100%', height: '260px', objectFit: 'cover' }} />
             ) : (
               <div style={{ height: '200px', background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '64px', opacity: 0.2 }}>📦</div>
             )}
@@ -295,7 +295,7 @@ const Store = () => {
               ) : cart.map(item => (
                 <div key={item._id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 0', borderBottom: '1px solid #F8FAFC' }}>
                   <div style={{ width: '54px', height: '54px', background: '#F8FAFC', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
-                    {item.images?.[0] ? <img src={`http://localhost:5000${item.images[0]}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px' }}>📦</div>}
+                    {item.images?.[0] ? <img src={`${API_URL}${item.images[0]}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px' }}>📦</div>}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '13px', fontWeight: '600', color: '#0F172A' }}>{item.name}</div>

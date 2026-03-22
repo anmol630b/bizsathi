@@ -32,6 +32,7 @@ const DashboardLayout = ({ children }) => {
   const searchRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || API_URL;
   const { user, logout } = useAuthStore();
 
   useEffect(() => {
@@ -165,7 +166,7 @@ const DashboardLayout = ({ children }) => {
       {/* Bottom */}
       <div style={{ padding: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
         {business?.isPublished && (
-          <a href={`http://localhost:3000/store/${business.slug}`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', borderRadius: '10px', background: 'rgba(0,200,150,0.08)', color: '#00C896', fontWeight: '600', fontSize: '12px', marginBottom: '6px', textDecoration: 'none', border: '1px solid rgba(0,200,150,0.15)' }}>
+          <a href={`/store/${business.slug}`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 10px', borderRadius: '10px', background: 'rgba(0,200,150,0.08)', color: '#00C896', fontWeight: '600', fontSize: '12px', marginBottom: '6px', textDecoration: 'none', border: '1px solid rgba(0,200,150,0.15)' }}>
             <FiGlobe size={13} /> View My Store
             <span style={{ marginLeft: 'auto', fontSize: '9px', background: 'rgba(0,200,150,0.2)', padding: '2px 6px', borderRadius: '99px' }}>LIVE</span>
           </a>
@@ -297,7 +298,7 @@ const DashboardLayout = ({ children }) => {
             </button>
 
             {business?.isPublished ? (
-              <a href={`http://localhost:3000/store/${business.slug}`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: '9px', border: '1.5px solid #E2E8F0', background: 'white', fontSize: '12px', color: '#00A87E', textDecoration: 'none', fontWeight: '600', whiteSpace: 'nowrap' }}>
+              <a href={`/store/${business.slug}`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: '9px', border: '1.5px solid #E2E8F0', background: 'white', fontSize: '12px', color: '#00A87E', textDecoration: 'none', fontWeight: '600', whiteSpace: 'nowrap' }}>
                 <FiGlobe size={13} /> {!isMobile && 'My Store'}
               </a>
             ) : (

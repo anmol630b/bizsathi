@@ -14,7 +14,7 @@ const useAuthStore = create(
         try {
           const res = await api.post('/auth/login', { email, password });
           set({ user: res.data.user, token: res.data.token, isLoading: false });
-          return { success: true, userType: res.data.user.userType };
+          return { success: true, userType: res.data.user.userType, role: res.data.user.role };
         } catch (error) {
           set({ isLoading: false });
           return { success: false, message: error.response?.data?.message || 'Login failed' };
@@ -26,7 +26,7 @@ const useAuthStore = create(
         try {
           const res = await api.post('/auth/register', data);
           set({ user: res.data.user, token: res.data.token, isLoading: false });
-          return { success: true, userType: res.data.user.userType };
+          return { success: true, userType: res.data.user.userType, role: res.data.user.role };
         } catch (error) {
           set({ isLoading: false });
           return { success: false, message: error.response?.data?.message || 'Registration failed' };
@@ -38,7 +38,7 @@ const useAuthStore = create(
         try {
           const res = await api.post('/auth/register-business', data);
           set({ user: res.data.user, token: res.data.token, isLoading: false });
-          return { success: true, userType: res.data.user.userType };
+          return { success: true, userType: res.data.user.userType, role: res.data.user.role };
         } catch (error) {
           set({ isLoading: false });
           return { success: false, message: error.response?.data?.message || 'Registration failed' };

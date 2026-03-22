@@ -115,7 +115,7 @@ const Products = () => {
       isAvailable: product.isAvailable,
       isFeatured: product.isFeatured
     });
-    setImagePreviews(product.images?.map(img => `http://localhost:5000${img}`) || []);
+    setImagePreviews(product.images?.map(img => `${API_URL}${img}`) || []);
     setImageFiles([]);
     setShowModal(true);
   };
@@ -161,7 +161,7 @@ const Products = () => {
               >
                 <div style={{ height: '160px', background: 'linear-gradient(135deg, var(--gray-100), var(--gray-50))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '48px', position: 'relative' }}>
                   {product.images?.[0] ? (
-                    <img src={`http://localhost:5000${product.images[0]}`} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={`${API_URL}${product.images[0]}`} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : <FiImage size={40} color="var(--gray-300)" />}
                   {product.isFeatured && (
                     <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#EF9F27', color: 'white', padding: '2px 8px', borderRadius: '20px', fontSize: '10px', fontWeight: '600' }}>Featured</div>

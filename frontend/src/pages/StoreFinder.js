@@ -31,6 +31,7 @@ const StoreFinder = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [searched, setSearched] = useState(false);
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || API_URL;
 
   useEffect(() => {
     fetchCities();
@@ -185,7 +186,7 @@ const StoreFinder = () => {
 
                 <div style={{ height: '120px', background: `linear-gradient(135deg, ${categoryColors[store.category] || '#00C896'}20, ${categoryColors[store.category] || '#00C896'}40)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                   {store.logo ? (
-                    <img src={`http://localhost:5000${store.logo}`} alt={store.name} style={{ width: '72px', height: '72px', borderRadius: '18px', objectFit: 'cover', border: '3px solid white', boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }} />
+                    <img src={`${API_URL}${store.logo}`} alt={store.name} style={{ width: '72px', height: '72px', borderRadius: '18px', objectFit: 'cover', border: '3px solid white', boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }} />
                   ) : (
                     <div style={{ width: '72px', height: '72px', borderRadius: '18px', background: categoryColors[store.category] || '#00C896', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: '800', color: 'white', boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }}>
                       {store.name.charAt(0)}

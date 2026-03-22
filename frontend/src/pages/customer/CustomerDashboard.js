@@ -25,6 +25,7 @@ const CustomerDashboard = () => {
   const avatarRef = useRef();
   const { logout, updateUser } = useAuthStore();
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || API_URL;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 900);
@@ -161,7 +162,7 @@ const CustomerDashboard = () => {
         <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '14px', padding: '16px', border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
           <div style={{ position: 'relative', width: '60px', margin: '0 auto 10px' }}>
             {userData?.avatar ? (
-              <img src={`http://localhost:5000${userData.avatar}`} alt="avatar" style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(0,200,150,0.3)' }} />
+              <img src={`${API_URL}${userData.avatar}`} alt="avatar" style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(0,200,150,0.3)' }} />
             ) : (
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'linear-gradient(135deg, #00C896, #6366F1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '22px', border: '3px solid rgba(0,200,150,0.3)' }}>
                 {userData?.name?.charAt(0)?.toUpperCase()}
@@ -395,7 +396,7 @@ const CustomerDashboard = () => {
                     <div key={store._id} style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #F1F5F9', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
                       <div style={{ height: '100px', background: 'linear-gradient(135deg, #F8FAFC, #F1F5F9)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                         {store.logo ? (
-                          <img src={`http://localhost:5000${store.logo}`} alt={store.name} style={{ width: '60px', height: '60px', borderRadius: '14px', objectFit: 'cover' }} />
+                          <img src={`${API_URL}${store.logo}`} alt={store.name} style={{ width: '60px', height: '60px', borderRadius: '14px', objectFit: 'cover' }} />
                         ) : (
                           <div style={{ width: '60px', height: '60px', borderRadius: '14px', background: 'linear-gradient(135deg, #00C896, #6366F1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '22px' }}>
                             {store.name?.charAt(0)}
@@ -529,7 +530,7 @@ const CustomerDashboard = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '28px', paddingBottom: '24px', borderBottom: '1px solid #F8FAFC' }}>
                   <div style={{ position: 'relative' }}>
                     {userData?.avatar ? (
-                      <img src={`http://localhost:5000${userData.avatar}`} alt="avatar" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #F1F5F9' }} />
+                      <img src={`${API_URL}${userData.avatar}`} alt="avatar" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #F1F5F9' }} />
                     ) : (
                       <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #00C896, #6366F1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '28px', border: '3px solid #F1F5F9' }}>
                         {userData?.name?.charAt(0)?.toUpperCase()}

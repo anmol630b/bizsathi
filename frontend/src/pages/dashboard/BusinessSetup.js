@@ -25,6 +25,7 @@ const BusinessSetup = () => {
   const [state, setState] = useState('');
   const [pincode, setPincode] = useState('');
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || API_URL;
 
   useEffect(() => { fetchBusiness(); }, []);
 
@@ -45,7 +46,7 @@ const BusinessSetup = () => {
         setCity(b.address?.city || '');
         setState(b.address?.state || '');
         setPincode(b.address?.pincode || '');
-        if (b.logo) setLogoPreview(`http://localhost:5000${b.logo}`);
+        if (b.logo) setLogoPreview(`${API_URL}${b.logo}`);
       }
     } catch (err) {}
   };

@@ -16,7 +16,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (user?.role !== 'admin') {
-      navigate('/dashboard');
+      navigate('/');
       return;
     }
     fetchAdminData();
