@@ -15,7 +15,17 @@ try {
   emailTemplates = { welcome: () => '', resetPassword: () => '' };
 }
 
-// Normal user register
+const userResponse = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  phone: user.phone,
+  userType: user.userType,
+  plan: user.plan,
+  avatar: user.avatar,
+  role: user.role
+});
+
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -24,13 +34,12 @@ router.post('/register', async (req, res) => {
     const user = await User.create({ name, email, password, phone, userType: 'user' });
     try { await sendEmail({ to: email, subject: 'Welcome to BizSathi!', html: emailTemplates.welcome(name) }); } catch(e) {}
     const token = generateToken(user._id);
-    res.status(201).json({ success: true, message: 'Account created!', token, user: { id: user._id, name: user.name, email: user.email, phone: user.phone, userType: user.userType, plan: user.plan, avatar: user.avatar } });
+    res.status(201).json({ success: true, message: 'Account created!', token, user: userResponse(user) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Business account register
 router.post('/register-business', async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -39,13 +48,12 @@ router.post('/register-business', async (req, res) => {
     const user = await User.create({ name, email, password, phone, userType: 'business' });
     try { await sendEmail({ to: email, subject: 'Welcome to BizSathi Business!', html: emailTemplates.welcome(name) }); } catch(e) {}
     const token = generateToken(user._id);
-    res.status(201).json({ success: true, message: 'Business account created!', token, user: { id: user._id, name: user.name, email: user.email, phone: user.phone, userType: user.userType, plan: user.plan, avatar: user.avatar } });
+    res.status(201).json({ success: true, message: 'Business account created!', token, user: userResponse(user) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Login (same for both)
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -59,7 +67,7 @@ router.post('/login', async (req, res) => {
     user.loginCount += 1;
     await user.save();
     const token = generateToken(user._id);
-    res.json({ success: true, message: 'Login successful', token, user: { id: user._id, name: user.name, email: user.email, phone: user.phone, userType: user.userType, plan: user.plan, avatar: user.avatar } });
+    res.json({ success: true, message: 'Login successful', token, user: userResponse(user) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
